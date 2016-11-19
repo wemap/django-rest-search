@@ -1,4 +1,5 @@
 aws-requests-auth >= 0.3.0
+celery >= 3.1.23, < 3.2.0
 certifi == 2015.04.28
 django >= 1.9
 elasticsearch >= 2.0.0, < 3.0.0
