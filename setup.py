@@ -4,7 +4,7 @@
 from setuptools import setup
 
 setup(
-    name='rest_search',
+    name='djangorestsearch',
     version='0.1.0',
     url='https://github.com/wemap/django-rest-search',
     license='BSD',
