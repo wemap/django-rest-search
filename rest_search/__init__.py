@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import functools
-import logging
-
 import certifi
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
-
-logger = logging.getLogger('rest_search')
 
 
 INDEXER_CLASSES = []
@@ -67,8 +62,6 @@ def queue_flush():
     global QUEUES
     if QUEUES:
         from rest_search.tasks import index_partial
-        logger.info('Flushing updates (%s)' %
-                    ', '.join(['%s: %d' % (k, len(v)) for k, v in QUEUES.items()]))
         if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
             index_partial.delay(QUEUES)
         QUEUES = {}

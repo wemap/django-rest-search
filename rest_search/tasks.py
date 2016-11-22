@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 
+import logging
+
 from celery import shared_task
 from elasticsearch.helpers import bulk
 
 from rest_search import get_elasticsearch, get_indexers
 
 
+logger = logging.getLogger('rest_search')
+
+
 @shared_task
 def index_data():
+    logger.info('Rebuilding index')
+
     es = get_elasticsearch()
     indexers = get_indexers()
 
@@ -22,14 +29,19 @@ def index_data():
                         'analyzer': {
                             'default': {
                                 'tokenizer': 'standard',
-                                'filter': ['standard', 'lowercase', 'asciifolding']
+                                'filter': [
+                                    'standard',
+                                    'lowercase',
+                                    'asciifolding',
+                                ]
                             },
                         }
                     }
                 },
             }
         if indexer.mappings is not None:
-            indices[indexer.index]['mappings'][indexer.doc_type] = indexer.mappings
+            mappings = indices[indexer.index]['mappings']
+            mappings[indexer.doc_type] = indexer.mappings
 
     for index, body in indices.items():
         es.indices.create(index=index, body=body, ignore=400)
@@ -43,6 +55,9 @@ def index_data():
 
 @shared_task
 def index_partial(queues):
+    updates = ['%s: %d' % (k, len(v)) for k, v in queues.items()]
+    logger.info('Updating index (%s)' % ', '.join(updates))
+
     es = get_elasticsearch()
     indexers = get_indexers()
     for doc_type, pks in queues.items():

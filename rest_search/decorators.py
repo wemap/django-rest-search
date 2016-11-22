@@ -4,6 +4,7 @@ import functools
 
 from rest_search import queue_flush
 
+
 def flush_updates(function):
     """
     Decorator that flushes ElasticSearch updates.
