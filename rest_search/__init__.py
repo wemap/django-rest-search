@@ -25,13 +25,13 @@ def get_elasticsearch():
        'AWS_SECRET_KEY' in settings.REST_SEARCH and \
        'AWS_REGION' in settings.REST_SEARCH:
 
-        kwargs['auth'] = AWSRequestsAuth(
+        kwargs['connection_class'] = RequestsHttpConnection
+        kwargs['http_auth'] = AWSRequestsAuth(
             aws_access_key=settings.REST_SEARCH['AWS_ACCESS_KEY'],
             aws_secret_access_key=settings.REST_SEARCH['AWS_SECRET_KEY'],
             aws_host=host,
             aws_region=settings.REST_SEARCH['AWS_REGION'],
             aws_service='es')
-        kwargs['connection_class'] = RequestsHttpConnection
 
     return Elasticsearch(**kwargs)
 
