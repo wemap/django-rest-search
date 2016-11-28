@@ -35,7 +35,7 @@ class SearchForm(forms.Form):
             else:
                 filter_q = {
                     'bool': {
-                        'must': filters
+                        'filter': filters
                     }
                 }
             query = {

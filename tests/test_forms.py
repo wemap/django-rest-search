@@ -36,7 +36,7 @@ class FormsTest(TestCase):
             'constant_score': {
                 'filter': {
                     'bool': {
-                        'must': [
+                        'filter': [
                             {
                                 'term': {
                                     'tags': 'tag1'
