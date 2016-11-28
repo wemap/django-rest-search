@@ -18,42 +18,32 @@ class SearchForm(forms.Form):
         return self._score_query(self._build_query())
 
     def _build_query(self):
-        filters = self.get_filter_clauses()
-        musts = self.get_must_clauses()
+        query = {
+            'bool': {}
+        }
 
-        if musts:
-            query = {
-                'bool': {
-                    'must': musts
-                }
-            }
-            if filters:
-                query['bool']['filter'] = filters
-        elif filters:
-            if len(filters) == 1:
-                filter_q = filters[0]
-            else:
-                filter_q = {
-                    'bool': {
-                        'filter': filters
-                    }
-                }
-            query = {
-                'constant_score': {
-                    'filter': filter_q
-                }
-            }
+        for kind in ['filter', 'must', 'must_not', 'should']:
+            clauses = getattr(self, 'get_%s_clauses' % kind)()
+            if clauses:
+                query['bool'][kind] = clauses
+
+        if query['bool']:
+            return query
         else:
-            query = {
+            return {
                 'match_all': {}
             }
-
-        return query
 
     def get_filter_clauses(self):
         return []
 
     def get_must_clauses(self):
+        return []
+
+    def get_must_not_clauses(self):
+        return []
+
+    def get_should_clauses(self):
         return []
 
     def _score_query(self, query):
