@@ -8,8 +8,8 @@ To perform data serialization, indexers build upon the REST framework's
 serializers, which allow great flexibility in how you map the data in the ORM
 and the JSON representation which is sent to ElasticSearch.
 
-Declaring serializers
----------------------
+Declaring indexers
+------------------
 
 For example, let's consider the following model::
 
