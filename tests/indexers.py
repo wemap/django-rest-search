@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from rest_search import indexers, register_indexer
+from rest_search import indexers
 
 from tests.models import Book
 from tests.serializers import BookSerializer
@@ -22,4 +22,4 @@ class BookIndexer(indexers.Indexer):
         return Book.objects.prefetch_related('tags')
 
 
-register_indexer(BookIndexer)
+indexers.register(BookIndexer)

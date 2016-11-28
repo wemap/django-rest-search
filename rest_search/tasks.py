@@ -5,7 +5,8 @@ import logging
 from celery import shared_task
 from elasticsearch.helpers import bulk
 
-from rest_search import get_elasticsearch, get_indexers
+from rest_search import get_elasticsearch
+from rest_search.indexers import _get_registered
 
 
 logger = logging.getLogger('rest_search')
@@ -16,7 +17,7 @@ def index_data():
     logger.info('Rebuilding index')
 
     es = get_elasticsearch()
-    indexers = get_indexers()
+    indexers = _get_registered()
 
     # create indices
     indices = {}
@@ -59,7 +60,7 @@ def index_partial(queues):
     logger.info('Updating index (%s)' % ', '.join(updates))
 
     es = get_elasticsearch()
-    indexers = get_indexers()
+    indexers = _get_registered()
     for doc_type, pks in queues.items():
         for indexer in indexers:
             if indexer.doc_type == doc_type:

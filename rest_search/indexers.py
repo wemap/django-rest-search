@@ -3,6 +3,9 @@
 from elasticsearch.helpers import scan
 
 
+_REGISTERED_CLASSES = []
+
+
 def bulk_iterate(queryset, block_size=1000):
     """
     Iterates over a huge queryset in chunks of 1000 items.
@@ -83,3 +86,17 @@ class Indexer(object):
             '_id': pk,
             '_op_type': 'delete',
         }
+
+
+def _get_registered():
+    """
+    Returns instances of all registered indexers.
+    """
+    return [cls() for cls in _REGISTERED_CLASSES]
+
+
+def register(indexer_class):
+    """
+    Register an indexer class.
+    """
+    _REGISTERED_CLASSES.append(indexer_class)

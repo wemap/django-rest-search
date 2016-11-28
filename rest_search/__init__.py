@@ -6,7 +6,6 @@ from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 
-INDEXER_CLASSES = []
 QUEUES = {}
 
 
@@ -41,13 +40,6 @@ def get_indexers():
     Returns instances of all registered indexers.
     """
     return [cls() for cls in INDEXER_CLASSES]
-
-
-def register_indexer(indexer_class):
-    """
-    Register an indexer class.
-    """
-    INDEXER_CLASSES.append(indexer_class)
 
 
 def queue_update(sender, instance, **kwargs):
