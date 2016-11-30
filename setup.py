@@ -9,6 +9,7 @@ setup(
     url='https://github.com/wemap/django-rest-search',
     license='BSD',
     description='ElasticSearch integration for Django.',
+    long_description=open('README.rst', 'r').read(),
     author='Jeremy Lainé',
     author_email='jeremy@getwemap.com',
     packages=['rest_search'],
