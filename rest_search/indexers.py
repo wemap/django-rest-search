@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from django.db.models.signals import post_delete, post_save
 from elasticsearch.helpers import scan
 
 
@@ -99,4 +100,11 @@ def register(indexer_class):
     """
     Register an indexer class.
     """
-    _REGISTERED_CLASSES.append(indexer_class)
+    from rest_search import queue_update
+    if indexer_class not in _REGISTERED_CLASSES:
+        _REGISTERED_CLASSES.append(indexer_class)
+
+        # register signal handlers
+        model = indexer_class.serializer_class.Meta.model
+        post_delete.connect(queue_update, sender=model)
+        post_save.connect(queue_update, sender=model)
