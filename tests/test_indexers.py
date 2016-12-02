@@ -1,15 +1,11 @@
 # -*- coding: utf-8 -*-
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
 from django.test import TestCase
 from rest_search import get_elasticsearch
 
 from tests.indexers import BookIndexer
 from tests.models import Book, Tag
+from tests.utils import patch
 
 
 class IndexersTest(TestCase):
