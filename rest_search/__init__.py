@@ -35,13 +35,6 @@ def get_elasticsearch():
     return Elasticsearch(**kwargs)
 
 
-def get_indexers():
-    """
-    Returns instances of all registered indexers.
-    """
-    return [cls() for cls in INDEXER_CLASSES]
-
-
 def queue_update(sender, instance, **kwargs):
     """
     Queue an update to the elasticsearch index.
