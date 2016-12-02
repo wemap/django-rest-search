@@ -13,7 +13,7 @@ There are two tasks:
 
 - ```rest_search.tasks.patch_index``` performs a partial update of the
   ElasticSearch index for specific items. You usually do not need to invoke
-  this yourself, as the indexer sets set up the required signal handlers
-  when it is registered.
+  this yourself, as the indexer sets the required signal handlers when it is
+  registered.
 
 .. [1] http://www.celeryproject.org/
