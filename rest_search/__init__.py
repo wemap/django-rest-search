@@ -58,7 +58,7 @@ def queue_flush():
     """
     global QUEUES
     if QUEUES:
-        from rest_search.tasks import index_partial
+        from rest_search.tasks import patch_index
         if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
-            index_partial.delay(QUEUES)
+            patch_index.delay(QUEUES)
         QUEUES = {}

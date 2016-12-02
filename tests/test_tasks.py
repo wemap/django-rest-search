@@ -6,7 +6,7 @@ except ImportError:
     from mock import patch
 
 from django.test import TestCase
-from rest_search.tasks import index_data, index_partial
+from rest_search.tasks import patch_index, update_index
 
 from tests.models import Book
 
@@ -15,10 +15,17 @@ class TasksTest(TestCase):
     def setUp(self):
         Book.objects.create(id=1, title='Some book')
 
+    @patch('rest_search.tasks.bulk')
+    def test_patch_index(self, mock_bulk):
+        patch_index({
+            'Book': [1],
+        })
+        self.assertEqual(len(mock_bulk.call_args_list), 1)
+
     @patch('elasticsearch.client.indices.IndicesClient.create')
     @patch('rest_search.tasks.bulk')
-    def test_index_data(self, mock_bulk, mock_create):
-        index_data()
+    def test_update_index(self, mock_bulk, mock_create):
+        update_index()
         mock_create.assert_called_with(
             index='bogus',
             body={
@@ -49,11 +56,4 @@ class TasksTest(TestCase):
             },
             ignore=400
         )
-        self.assertEqual(len(mock_bulk.call_args_list), 1)
-
-    @patch('rest_search.tasks.bulk')
-    def test_index_partial(self, mock_bulk):
-        index_partial({
-            'Book': [1],
-        })
         self.assertEqual(len(mock_bulk.call_args_list), 1)

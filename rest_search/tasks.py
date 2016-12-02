@@ -13,8 +13,27 @@ logger = logging.getLogger('rest_search')
 
 
 @shared_task
-def index_data():
-    logger.info('Rebuilding index')
+def patch_index(queues):
+    """
+    Performs a partial update of the ElasticSearch.
+    """
+    updates = ['%s: %d items' % (k, len(v)) for k, v in queues.items()]
+    logger.info('Patching index (%s)' % ', '.join(updates))
+
+    es = get_elasticsearch()
+    indexers = _get_registered()
+    for doc_type, pks in queues.items():
+        for indexer in indexers:
+            if indexer.doc_type == doc_type:
+                bulk(es, indexer.partial_items(pks), raise_on_error=False)
+
+
+@shared_task
+def update_index():
+    """
+    Performs a full update of the ElasticSearch index.
+    """
+    logger.info('Updating index')
 
     es = get_elasticsearch()
     indexers = _get_registered()
@@ -52,16 +71,3 @@ def index_data():
         bulk(es, indexer.iterate_items(es),
              raise_on_error=False,
              request_timeout=30)
-
-
-@shared_task
-def index_partial(queues):
-    updates = ['%s: %d' % (k, len(v)) for k, v in queues.items()]
-    logger.info('Updating index (%s)' % ', '.join(updates))
-
-    es = get_elasticsearch()
-    indexers = _get_registered()
-    for doc_type, pks in queues.items():
-        for indexer in indexers:
-            if indexer.doc_type == doc_type:
-                bulk(es, indexer.partial_items(pks), raise_on_error=False)

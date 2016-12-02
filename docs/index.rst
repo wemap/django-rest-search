@@ -10,6 +10,7 @@ Contents:
    :maxdepth: 2
 
    indexers
+   tasks
 
 Indices and tables
 ==================
