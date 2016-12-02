@@ -1,11 +1,19 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
+from rest_search.forms import SearchForm
 
 from tests.forms import BookSearchForm
 
 
 class FormsTest(TestCase):
+    def test_base(self):
+        form = SearchForm({})
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.get_query(), {
+            'match_all': {}
+        })
+
     def test_empty(self):
         form = BookSearchForm({})
         self.assertTrue(form.is_valid())
