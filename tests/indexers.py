@@ -16,6 +16,7 @@ class BookIndexer(indexers.Indexer):
             }
         }
     }
+    private_properties = ['id']
     serializer_class = BookSerializer
 
     def get_queryset(self):
