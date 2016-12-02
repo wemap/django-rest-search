@@ -37,4 +37,6 @@ You can then create an indexer::
         def get_queryset(self):
             return Book.objects.all()
 
+And finally you register the indexer::
+
     indexers.register(BookIndexer)
