@@ -60,5 +60,9 @@ def queue_flush():
     if QUEUES:
         from rest_search.tasks import patch_index
         if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
-            patch_index.delay(QUEUES)
+            # convert sets to lists, otherwise they are not JSON-serializable
+            args = {}
+            for doc_type, pks in QUEUES.items():
+                args[doc_type] = list(pks)
+            patch_index.delay(args)
         QUEUES = {}
