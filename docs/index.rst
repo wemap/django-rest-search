@@ -4,7 +4,43 @@ Django REST Search
 Django REST Search provides a set of classes to facilitate the integration of
 ElasticSearch [1]_ into applications powered by the Django REST Framework [2]_.
 
-Contents:
+Installation
+------------
+
+The easiest way to install Django REST Search is using pip.
+
+.. code-block:: shell
+
+    pip install djangorestsearch
+
+Add `'rest_search'` to your `INSTALLED_APPS` setting.
+
+.. code-block:: python
+
+    INSTALLED_APPS = [
+        ...
+        'rest_search',
+    ]
+
+Add the middleware to flush ElasticSearch updates to a celery task.
+
+.. code-block:: python
+
+    MIDDLEWARE_CLASSES = [
+        ...
+        'rest_search.middleware.FlushUpdatesMiddleware',
+    ]
+
+Configure your ElasticSearch connection.
+
+.. code-block:: python
+
+    REST_SEARCH = {
+        'HOST': 'es.example.com',
+    }
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2

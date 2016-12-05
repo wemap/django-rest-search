@@ -40,3 +40,13 @@ You can then create an indexer::
 And finally you register the indexer::
 
     indexers.register(BookIndexer)
+
+Index updates
+-------------
+
+When you register an indexer, it will install signal handlers for save and
+delete events and queue updates to the ElasticSearch index.
+
+For these updates to actually be performed, either install the
+```rest_search.middleware.FlushUpdatesMiddleware``` middleware or wrap your
+code using the ```rest_search.decorators.flush_updates``` decorator.
