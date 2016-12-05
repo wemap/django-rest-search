@@ -13,16 +13,16 @@ logger = logging.getLogger('rest_search')
 
 
 @shared_task
-def patch_index(queues):
+def patch_index(updates):
     """
     Performs a partial update of the ElasticSearch.
     """
-    updates = ['%s: %d items' % (k, len(v)) for k, v in queues.items()]
-    logger.info('Patching index (%s)' % ', '.join(updates))
+    updates_str = ['%s: %d items' % (k, len(v)) for k, v in updates.items()]
+    logger.info('Patching index (%s)' % ', '.join(updates_str))
 
     es = get_elasticsearch()
     indexers = _get_registered()
-    for doc_type, pks in queues.items():
+    for doc_type, pks in updates.items():
         for indexer in indexers:
             if indexer.doc_type == doc_type:
                 bulk(es, indexer.partial_items(pks), raise_on_error=False)

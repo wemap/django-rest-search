@@ -35,14 +35,19 @@ def get_elasticsearch():
     return Elasticsearch(**kwargs)
 
 
-def queue_update(sender, instance, **kwargs):
+def queue_add(updates):
     """
-    Queue an update to the elasticsearch index.
+    Adds items to the updates queue, in the form:
+
+    {
+        'Book': [1, 2],
+    }
     """
-    doc_type = instance.__class__.__name__
-    if doc_type not in QUEUES:
-        QUEUES[doc_type] = set()
-    QUEUES[doc_type].add(instance.pk)
+    for doc_type, pks in updates.items():
+        if doc_type in QUEUES:
+            QUEUES[doc_type].update(set(pks))
+        else:
+            QUEUES[doc_type] = set(pks)
 
 
 def queue_flush():

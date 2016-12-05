@@ -96,15 +96,25 @@ def _get_registered():
     return [cls() for cls in _REGISTERED_CLASSES]
 
 
+def _instance_changed(sender, instance, **kwargs):
+    """
+    Queues an update to the ElasticSearch index.
+    """
+    from rest_search import queue_add
+    doc_type = instance.__class__.__name__
+    queue_add({
+        doc_type: [instance.pk],
+    })
+
+
 def register(indexer_class):
     """
-    Register an indexer class.
+    Registers an indexer class.
     """
-    from rest_search import queue_update
     if indexer_class not in _REGISTERED_CLASSES:
         _REGISTERED_CLASSES.append(indexer_class)
 
         # register signal handlers
         model = indexer_class.serializer_class.Meta.model
-        post_delete.connect(queue_update, sender=model)
-        post_save.connect(queue_update, sender=model)
+        post_delete.connect(_instance_changed, sender=model)
+        post_save.connect(_instance_changed, sender=model)
