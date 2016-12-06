@@ -43,11 +43,12 @@ def queue_add(updates):
         'Book': [1, 2],
     }
     """
-    for doc_type, pks in updates.items():
-        if doc_type in QUEUES:
-            QUEUES[doc_type].update(set(pks))
-        else:
-            QUEUES[doc_type] = set(pks)
+    if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
+        for doc_type, pks in updates.items():
+            if doc_type in QUEUES:
+                QUEUES[doc_type].update(set(pks))
+            else:
+                QUEUES[doc_type] = set(pks)
 
 
 def queue_flush():
@@ -57,10 +58,9 @@ def queue_flush():
     global QUEUES
     if QUEUES:
         from rest_search.tasks import patch_index
-        if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
-            # convert sets to lists, otherwise they are not JSON-serializable
-            args = {}
-            for doc_type, pks in QUEUES.items():
-                args[doc_type] = list(pks)
-            patch_index.delay(args)
-        QUEUES = {}
+        # convert sets to lists, otherwise they are not JSON-serializable
+        args = {}
+        for doc_type, pks in QUEUES.items():
+            args[doc_type] = list(pks)
+        patch_index.delay(args)
+        QUEUES.clear()
