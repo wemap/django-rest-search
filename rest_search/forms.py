@@ -3,14 +3,10 @@
 from django import forms
 
 
-class SearchForm(forms.Form):
+class SearchMixin(object):
     """
-    Base form for building ElasticSearch queries.
+    Mixin to help build ElasticSearch queries.
     """
-    def __init__(self, data, context={}):
-        self.context = context
-        super(SearchForm, self).__init__(data)
-
     def get_query(self):
         """
         Returns the query to be executed by ElasticSearch.
@@ -48,3 +44,12 @@ class SearchForm(forms.Form):
 
     def _score_query(self, query):
         return query
+
+
+class SearchForm(SearchMixin, forms.Form):
+    """
+    Base form for building ElasticSearch queries.
+    """
+    def __init__(self, data, context={}):
+        self.context = context
+        super(SearchForm, self).__init__(data)
