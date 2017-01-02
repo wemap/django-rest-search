@@ -14,8 +14,8 @@ def get_elasticsearch():
 
     kwargs = {
         'host': host,
-        'port': 443,
-        'use_ssl': True,
+        'port': settings.REST_SEARCH.get('PORT', 9200),
+        'use_ssl': settings.REST_SEARCH.get('USE_SSL', False),
         'verify_certs': True,
         'ca_certs': certifi.where()
     }
