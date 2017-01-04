@@ -29,7 +29,7 @@ def patch_index(updates):
 
 
 @shared_task
-def update_index():
+def update_index(remove=True):
     """
     Performs a full update of the ElasticSearch index.
     """
@@ -68,6 +68,6 @@ def update_index():
 
     # perform full index resync
     for indexer in indexers:
-        bulk(es, indexer.iterate_items(es),
+        bulk(es, indexer.iterate_items(es, remove=remove),
              raise_on_error=False,
              request_timeout=30)

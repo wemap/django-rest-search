@@ -24,7 +24,7 @@ class Indexer(object):
     def __init__(self):
         self.doc_type = self.serializer_class.Meta.model.__name__
 
-    def iterate_items(self, es):
+    def iterate_items(self, es, remove=True):
         """
         Generates items to perform a full resync of the index.
         """
@@ -36,11 +36,12 @@ class Indexer(object):
             ids.add(item.pk)
             yield self.__add_item(item)
 
-        # delete obsolete items
-        for i in scan(es, index=self.index, doc_type=self.doc_type, fields=[]):
-            pk = int(i['_id'])
-            if pk not in ids:
-                yield self.__remove_item(pk)
+        # remove obsolete items
+        if remove:
+            for i in scan(es, index=self.index, doc_type=self.doc_type, fields=[]):
+                pk = int(i['_id'])
+                if pk not in ids:
+                    yield self.__remove_item(pk)
 
     def partial_items(self, pks):
         """
@@ -57,7 +58,7 @@ class Indexer(object):
             removed.discard(item.pk)
             yield self.__add_item(item)
 
-        # delete obsolete items
+        # remove obsolete items
         for pk in removed:
             yield self.__remove_item(pk)
 
