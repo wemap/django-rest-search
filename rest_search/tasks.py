@@ -12,6 +12,13 @@ from rest_search.indexers import _get_registered
 logger = logging.getLogger('rest_search')
 
 
+def put_mapping(es, indexer):
+    if indexer.mappings is not None:
+        es.indices.put_mapping(body=indexer.mappings,
+                               doc_type=indexer.doc_type,
+                               index=indexer.index)
+
+
 @shared_task
 def patch_index(updates):
     """
@@ -43,7 +50,6 @@ def update_index(remove=True):
     for indexer in indexers:
         if indexer.index not in indices:
             indices[indexer.index] = {
-                'mappings': {},
                 'settings': {
                     'analysis': {
                         'analyzer': {
@@ -57,17 +63,14 @@ def update_index(remove=True):
                             },
                         }
                     }
-                },
+                }
             }
-        if indexer.mappings is not None:
-            mappings = indices[indexer.index]['mappings']
-            mappings[indexer.doc_type] = indexer.mappings
-
     for index, body in indices.items():
         es.indices.create(index=index, body=body, ignore=400)
 
     # perform full index resync
     for indexer in indexers:
+        put_mapping(es, indexer)
         bulk(es, indexer.iterate_items(es, remove=remove),
              raise_on_error=False,
              request_timeout=30)

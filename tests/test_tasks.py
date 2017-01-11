@@ -18,9 +18,10 @@ class TasksTest(TestCase):
         })
         self.assertEqual(len(mock_bulk.call_args_list), 1)
 
+    @patch('elasticsearch.client.indices.IndicesClient.put_mapping')
     @patch('elasticsearch.client.indices.IndicesClient.create')
     @patch('rest_search.tasks.bulk')
-    def test_update_index(self, mock_bulk, mock_create):
+    def test_update_index(self, mock_bulk, mock_create, mock_put_mapping):
         update_index()
         mock_create.assert_called_with(
             index='bogus',
@@ -38,18 +39,22 @@ class TasksTest(TestCase):
                             },
                         }
                     }
-                },
-                'mappings': {
-                    'Book': {
-                        'properties': {
-                            'tags': {
-                                'type': 'string',
-                                'index': 'not_analyzed',
-                            }
-                        }
-                    }
                 }
             },
             ignore=400
         )
+
+        mock_put_mapping.assert_called_with(
+            body={
+                'properties': {
+                    'tags': {
+                        'type': 'string',
+                        'index': 'not_analyzed',
+                    }
+                }
+            },
+            doc_type='Book',
+            index='bogus',
+        )
+
         self.assertEqual(len(mock_bulk.call_args_list), 1)
