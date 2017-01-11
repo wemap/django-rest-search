@@ -8,9 +8,6 @@ from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 
-QUEUES = {}
-
-
 class ConnectionHandler(object):
     def __init__(self):
         self._connections = local()
@@ -22,7 +19,8 @@ class ConnectionHandler(object):
         if hasattr(self._connections, alias):
             return getattr(self._connections, alias)
 
-        conn = self.__create_connection(settings.REST_SEARCH_CONNECTIONS[alias])
+        assert alias == 'default'
+        conn = self.__create_connection(settings.REST_SEARCH)
         setattr(self._connections, alias, conn)
         return conn
 
@@ -47,44 +45,8 @@ class ConnectionHandler(object):
                 aws_region=config['AWS_REGION'],
                 aws_service='es')
 
-        es = Elasticsearch(**kwargs)
-        es._index = config['INDEX_NAME']
-        return es
+        return Elasticsearch(**kwargs)
 
 
-def get_elasticsearch(indexer=None):
-    return connections['default']
-
-
-def queue_add(updates):
-    """
-    Adds items to the updates queue, in the form:
-
-    {
-        'Book': [1, 2],
-    }
-    """
-    if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
-        for doc_type, pks in updates.items():
-            if doc_type in QUEUES:
-                QUEUES[doc_type].update(set(pks))
-            else:
-                QUEUES[doc_type] = set(pks)
-
-
-def queue_flush():
-    """
-    Triggers a celery task for the queued updates, if any.
-    """
-    global QUEUES
-    if QUEUES:
-        from rest_search.tasks import patch_index
-        # convert sets to lists, otherwise they are not JSON-serializable
-        args = {}
-        for doc_type, pks in QUEUES.items():
-            args[doc_type] = list(pks)
-        patch_index.delay(args)
-        QUEUES.clear()
-
-
-connections = ConnectionHandler()
+class ConnectionRouter(object):
+    pass

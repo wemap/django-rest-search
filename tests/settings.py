@@ -17,8 +17,11 @@ MIDDLEWARE_CLASSES = [
     'rest_search.middleware.FlushUpdatesMiddleware',
 ]
 
-REST_SEARCH = {
-    'HOST': 'es.example.com',
+REST_SEARCH_CONNECTIONS = {
+    'default': {
+        'HOST': 'es.example.com',
+        'INDEX_NAME': 'bogus',
+    }
 }
 
 ROOT_URLCONF = 'tests.urls'

@@ -3,6 +3,8 @@
 from django.db.models.signals import post_delete, post_save
 from elasticsearch.helpers import scan
 
+from rest_search import get_elasticsearch
+
 
 _REGISTERED_CLASSES = []
 
@@ -24,24 +26,26 @@ class Indexer(object):
     def __init__(self):
         self.doc_type = self.serializer_class.Meta.model.__name__
 
-    def iterate_items(self, es, remove=True):
+    def iterate_items(self, remove=True):
         """
         Generates items to perform a full resync of the index.
         """
+        es = get_elasticsearch(self)
+        index = es._index
         queryset = self.get_queryset()
 
         # index current items
         ids = set()
         for item in bulk_iterate(queryset):
             ids.add(item.pk)
-            yield self.__add_item(item)
+            yield self.__add_item(item, index=index)
 
         # remove obsolete items
         if remove:
-            for i in scan(es, index=self.index, doc_type=self.doc_type, fields=[]):
+            for i in scan(es, index=index, doc_type=self.doc_type, fields=[]):
                 pk = int(i['_id'])
                 if pk not in ids:
-                    yield self.__remove_item(pk)
+                    yield self.__remove_item(pk, index=index)
 
     def partial_items(self, pks):
         """
@@ -50,17 +54,19 @@ class Indexer(object):
         pks is a list of primary keys of items which have changed
         or been deleted.
         """
+        es = get_elasticsearch(self)
+        index = es._index
         queryset = self.get_queryset().filter(pk__in=pks)
 
         # index current items
         removed = set(pks)
         for item in bulk_iterate(queryset):
             removed.discard(item.pk)
-            yield self.__add_item(item)
+            yield self.__add_item(item, index=index)
 
         # remove obsolete items
         for pk in removed:
-            yield self.__remove_item(pk)
+            yield self.__remove_item(pk, index=index)
 
     def map_results(self, results):
         """
@@ -73,17 +79,17 @@ class Indexer(object):
             return item
         return map(map_result_item, results)
 
-    def __add_item(self, item):
+    def __add_item(self, item, index):
         return {
-            '_index': self.index,
+            '_index': index,
             '_type': self.doc_type,
             '_id': item.pk,
             '_source': self.serializer_class(item).data
         }
 
-    def __remove_item(self, pk):
+    def __remove_item(self, pk, index):
         return {
-            '_index': self.index,
+            '_index': index,
             '_type': self.doc_type,
             '_id': pk,
             '_op_type': 'delete',

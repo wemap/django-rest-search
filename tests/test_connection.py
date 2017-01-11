@@ -1,21 +1,30 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase, override_settings
-from rest_search import get_elasticsearch
+from rest_search import connections, get_elasticsearch
 
+from tests.indexers import BookIndexer
 from tests.utils import patch
 
 
 class ConnectionTest(TestCase):
-    @override_settings(REST_SEARCH={
-        'AWS_ACCESS_KEY': 'some-access-key',
-        'AWS_REGION': 'some-region',
-        'AWS_SECRET_KEY': 'some-secret-key',
-        'HOST': 'es.example.com',
+    def tearDown(self):
+        del connections['default']
+
+    @override_settings(REST_SEARCH_CONNECTIONS={
+        'default': {
+            'AWS_ACCESS_KEY': 'some-access-key',
+            'AWS_REGION': 'some-region',
+            'AWS_SECRET_KEY': 'some-secret-key',
+            'HOST': 'es.example.com',
+            'INDEX_NAME': 'bogus',
+        }
     })
     @patch('rest_search.Elasticsearch')
     def test_aws_auth(self, mock_elasticsearch):
-        es = get_elasticsearch()
+        indexer = BookIndexer()
+
+        es = get_elasticsearch(indexer)
         self.assertIsNotNone(es)
 
         self.assertEqual(mock_elasticsearch.call_count, 1)
@@ -32,7 +41,9 @@ class ConnectionTest(TestCase):
 
     @patch('rest_search.Elasticsearch')
     def test_no_auth(self, mock_elasticsearch):
-        es = get_elasticsearch()
+        indexer = BookIndexer()
+
+        es = get_elasticsearch(indexer)
         self.assertIsNotNone(es)
 
         self.assertEqual(mock_elasticsearch.call_count, 1)

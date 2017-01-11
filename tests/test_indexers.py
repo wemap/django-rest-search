@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
-from rest_search import get_elasticsearch
 
 from tests.indexers import BookIndexer
 from tests.models import Book, Tag
@@ -14,13 +13,11 @@ class IndexersTest(TestCase):
         book = Book.objects.create(id=1, title='Some book')
         book.tags.set(tags)
 
-    @patch('elasticsearch.client.indices.IndicesClient.create')
     @patch('rest_search.indexers.scan')
-    def test_iterate_items(self, mock_scan, mock_create):
-        es = get_elasticsearch()
+    def test_iterate_items(self, mock_scan):
         indexer = BookIndexer()
         with self.assertNumQueries(3):
-            data = list(indexer.iterate_items(es))
+            data = list(indexer.iterate_items())
         self.assertEqual(data, [
             {
                 '_id': 1,
@@ -34,9 +31,8 @@ class IndexersTest(TestCase):
             }
         ])
 
-    @patch('elasticsearch.client.indices.IndicesClient.create')
     @patch('rest_search.indexers.scan')
-    def test_iterate_items_with_deleted(self, mock_scan, mock_create):
+    def test_iterate_items_with_deleted(self, mock_scan):
         # books : 1 (still there), 1001 (gone)
         mock_scan.return_value = [
             {
@@ -53,10 +49,9 @@ class IndexersTest(TestCase):
             },
         ]
 
-        es = get_elasticsearch()
         indexer = BookIndexer()
         with self.assertNumQueries(3):
-            data = list(indexer.iterate_items(es))
+            data = list(indexer.iterate_items())
         self.assertEqual(data, [
             {
                 '_id': 1,

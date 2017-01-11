@@ -7,7 +7,6 @@ from tests.serializers import BookSerializer
 
 
 class BookIndexer(indexers.Indexer):
-    index = 'bogus'
     mappings = {
         'properties': {
             'tags': {
