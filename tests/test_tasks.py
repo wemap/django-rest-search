@@ -32,8 +32,7 @@ class TasksTest(TestCase):
                         }
                     }
                 }
-            },
-            ignore=400
+            }
         )
 
     @patch('elasticsearch.client.indices.IndicesClient.delete')
@@ -73,8 +72,7 @@ class TasksTest(TestCase):
                         }
                     }
                 }
-            },
-            ignore=400
+            }
         )
 
         mock_put_mapping.assert_called_with(
