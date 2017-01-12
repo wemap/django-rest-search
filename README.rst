@@ -1,8 +1,11 @@
 Django REST Search
 ==================
 
-.. image:: https://travis-ci.org/wemap/django-rest-search.png
+.. image:: https://img.shields.io/travis/wemap/django-rest-search.svg
     :target: http://travis-ci.org/wemap/django-rest-search
+
+.. image:: https://img.shields.io/pypi/v/djangorestsearch.svg
+    :target: https://pypi.python.org/pypi/djangorestsearch
 
 Django REST Search provides a set of classes to facilitate the integration of
 ElasticSearch into applications powered by the Django REST Framework.
