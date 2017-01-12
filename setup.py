@@ -5,7 +5,7 @@ from setuptools import setup
 
 setup(
     name='djangorestsearch',
-    version='0.4.6',
+    version='0.5.0',
     url='https://github.com/wemap/django-rest-search',
     license='BSD',
     description='ElasticSearch integration for Django.',

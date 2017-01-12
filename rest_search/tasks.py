@@ -39,7 +39,8 @@ def create_index():
             mappings[indexer.doc_type] = indexer.mappings
 
     for es, body in conns.items():
-        es.indices.create(index=es._index, body=body)
+        if not es.indices.exists(es._index):
+            es.indices.create(index=es._index, body=body)
 
 
 def delete_index(es):

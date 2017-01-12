@@ -12,9 +12,13 @@ class TasksTest(TestCase):
     def setUp(self):
         Book.objects.create(id=1, title='Some book')
 
+    @patch('elasticsearch.client.indices.IndicesClient.exists')
     @patch('elasticsearch.client.indices.IndicesClient.create')
-    def test_create_index(self, mock_create):
+    def test_create_index(self, mock_create, mock_exists):
+        mock_exists.return_value = False
+
         create_index()
+        mock_exists.assert_called_with('bogus')
         mock_create.assert_called_with(
             index='bogus',
             body={
@@ -45,6 +49,15 @@ class TasksTest(TestCase):
             }
         )
 
+    @patch('elasticsearch.client.indices.IndicesClient.exists')
+    @patch('elasticsearch.client.indices.IndicesClient.create')
+    def test_create_index_exists(self, mock_create, mock_exists):
+        mock_exists.return_value = True
+
+        create_index()
+        mock_exists.assert_called_with('bogus')
+        mock_create.assert_not_called()
+
     @patch('elasticsearch.client.indices.IndicesClient.delete')
     def test_delete_index(self, mock_delete):
         delete_index(connections['default'])
@@ -60,10 +73,14 @@ class TasksTest(TestCase):
         })
         self.assertEqual(len(mock_bulk.call_args_list), 1)
 
+    @patch('elasticsearch.client.indices.IndicesClient.exists')
     @patch('elasticsearch.client.indices.IndicesClient.create')
     @patch('rest_search.tasks.bulk')
-    def test_update_index(self, mock_bulk, mock_create):
+    def test_update_index(self, mock_bulk, mock_create, mock_exists):
+        mock_exists.return_value = False
+
         update_index()
+        mock_exists.assert_called_with('bogus')
         mock_create.assert_called_with(
             index='bogus',
             body={
