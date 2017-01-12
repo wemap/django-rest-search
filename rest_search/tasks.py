@@ -30,8 +30,7 @@ def create_index(es):
                     }
                 }
             }
-        },
-        ignore=400)
+        })
 
 
 def delete_index(es):
