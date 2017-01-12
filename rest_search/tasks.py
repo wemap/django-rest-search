@@ -13,23 +13,29 @@ logger = logging.getLogger('rest_search')
 
 
 def create_index(es):
-    body = {
-        'settings': {
-            'analysis': {
-                'analyzer': {
-                    'default': {
-                        'tokenizer': 'standard',
-                        'filter': [
-                            'standard',
-                            'lowercase',
-                            'asciifolding',
-                        ]
-                    },
+    return es.indices.create(
+        index=es._index,
+        body={
+            'settings': {
+                'analysis': {
+                    'analyzer': {
+                        'default': {
+                            'tokenizer': 'standard',
+                            'filter': [
+                                'standard',
+                                'lowercase',
+                                'asciifolding',
+                            ]
+                        },
+                    }
                 }
             }
-        }
-    }
-    es.indices.create(index=es._index, body=body, ignore=400)
+        },
+        ignore=400)
+
+
+def delete_index(es):
+    return es.indices.delete(index=es._index, ignore=404)
 
 
 def put_mapping(es, indexer):
