@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase, override_settings
-from rest_search import connections, get_elasticsearch
+from rest_search import connections
 
-from tests.indexers import BookIndexer
 from tests.utils import patch
 
 
@@ -22,9 +21,7 @@ class ConnectionTest(TestCase):
     })
     @patch('rest_search.Elasticsearch')
     def test_aws_auth(self, mock_elasticsearch):
-        indexer = BookIndexer()
-
-        es = get_elasticsearch(indexer)
+        es = connections['default']
         self.assertIsNotNone(es)
 
         self.assertEqual(mock_elasticsearch.call_count, 1)
@@ -41,9 +38,7 @@ class ConnectionTest(TestCase):
 
     @patch('rest_search.Elasticsearch')
     def test_no_auth(self, mock_elasticsearch):
-        indexer = BookIndexer()
-
-        es = get_elasticsearch(indexer)
+        es = connections['default']
         self.assertIsNotNone(es)
 
         self.assertEqual(mock_elasticsearch.call_count, 1)
