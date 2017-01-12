@@ -31,7 +31,6 @@ You can then create an indexer::
     from rest_search import indexers
 
     class BookIndexer(indexers.Indexer):
-        index = 'some_index'
         serializer_class = BookSerializer
 
         def get_queryset(self):

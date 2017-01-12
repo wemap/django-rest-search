@@ -35,8 +35,11 @@ Configure your ElasticSearch connection.
 
 .. code-block:: python
 
-    REST_SEARCH = {
-        'HOST': 'es.example.com',
+    REST_SEARCH_CONNECTIONS = {
+        'default': {
+            'HOST': 'es.example.com',
+            'INDEX_NAME': 'some_index',
+        }
     }
 
 Contents
