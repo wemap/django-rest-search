@@ -14,10 +14,20 @@ class TasksTest(TestCase):
 
     @patch('elasticsearch.client.indices.IndicesClient.create')
     def test_create_index(self, mock_create):
-        create_index(connections['default'])
+        create_index()
         mock_create.assert_called_with(
             index='bogus',
             body={
+                'mappings': {
+                    'Book': {
+                        'properties': {
+                            'tags': {
+                                'index': 'not_analyzed',
+                                'type': 'string',
+                            }
+                        }
+                    }
+                },
                 'settings': {
                     'analysis': {
                         'analyzer': {
@@ -50,14 +60,23 @@ class TasksTest(TestCase):
         })
         self.assertEqual(len(mock_bulk.call_args_list), 1)
 
-    @patch('elasticsearch.client.indices.IndicesClient.put_mapping')
     @patch('elasticsearch.client.indices.IndicesClient.create')
     @patch('rest_search.tasks.bulk')
-    def test_update_index(self, mock_bulk, mock_create, mock_put_mapping):
+    def test_update_index(self, mock_bulk, mock_create):
         update_index()
         mock_create.assert_called_with(
             index='bogus',
             body={
+                'mappings': {
+                    'Book': {
+                        'properties': {
+                            'tags': {
+                                'index': 'not_analyzed',
+                                'type': 'string',
+                            }
+                        }
+                    }
+                },
                 'settings': {
                     'analysis': {
                         'analyzer': {
@@ -73,19 +92,6 @@ class TasksTest(TestCase):
                     }
                 }
             }
-        )
-
-        mock_put_mapping.assert_called_with(
-            body={
-                'properties': {
-                    'tags': {
-                        'type': 'string',
-                        'index': 'not_analyzed',
-                    }
-                }
-            },
-            doc_type='Book',
-            index='bogus',
         )
 
         self.assertEqual(len(mock_bulk.call_args_list), 1)

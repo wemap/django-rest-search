@@ -12,36 +12,38 @@ from rest_search.indexers import _get_registered
 logger = logging.getLogger('rest_search')
 
 
-def create_index(es):
-    return es.indices.create(
-        index=es._index,
-        body={
-            'settings': {
-                'analysis': {
-                    'analyzer': {
-                        'default': {
-                            'tokenizer': 'standard',
-                            'filter': [
-                                'standard',
-                                'lowercase',
-                                'asciifolding',
-                            ]
-                        },
+def create_index():
+    conns = {}
+    for indexer in _get_registered():
+        es = get_elasticsearch(indexer)
+        if es not in conns:
+            conns[es] = {
+                'mappings': {},
+                'settings': {
+                    'analysis': {
+                        'analyzer': {
+                            'default': {
+                                'tokenizer': 'standard',
+                                'filter': [
+                                    'standard',
+                                    'lowercase',
+                                    'asciifolding',
+                                ]
+                            },
+                        }
                     }
                 }
             }
-        })
+        if indexer.mappings is not None:
+            mappings = conns[es]['mappings']
+            mappings[indexer.doc_type] = indexer.mappings
+
+    for es, body in conns.items():
+        es.indices.create(index=es._index, body=body)
 
 
 def delete_index(es):
     return es.indices.delete(index=es._index, ignore=404)
-
-
-def put_mapping(es, indexer):
-    if indexer.mappings is not None:
-        es.indices.put_mapping(body=indexer.mappings,
-                               doc_type=indexer.doc_type,
-                               index=es._index)
 
 
 @shared_task
@@ -67,20 +69,11 @@ def update_index(remove=True):
     """
     logger.info('Updating index')
 
-    created = set()
+    create_index()
 
     for indexer in _get_registered():
-        es = get_elasticsearch(indexer)
-
-        # create index
-        if es not in created:
-            create_index(es)
-            created.add(es)
-
-        # define mapping
-        put_mapping(es, indexer)
-
         # perform full resync
+        es = get_elasticsearch(indexer)
         bulk(es, indexer.iterate_items(remove=remove),
              raise_on_error=False,
              request_timeout=30)
