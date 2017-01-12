@@ -22,7 +22,8 @@ class ConnectionHandler(object):
         if hasattr(self._connections, alias):
             return getattr(self._connections, alias)
 
-        conn = self.__create_connection(settings.REST_SEARCH_CONNECTIONS[alias])
+        conn = self.__create_connection(
+            settings.REST_SEARCH_CONNECTIONS[alias])
         setattr(self._connections, alias, conn)
         return conn
 

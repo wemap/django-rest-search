@@ -79,6 +79,14 @@ class Indexer(object):
             return item
         return map(map_result_item, results)
 
+    def scan(self, **kwargs):
+        es = get_elasticsearch(self)
+        return scan(es, index=es._index, doc_type=self.doc_type, **kwargs)
+
+    def search(self, **kwargs):
+        es = get_elasticsearch(self)
+        return es.search(index=es._index, doc_type=self.doc_type, **kwargs)
+
     def __add_item(self, item, index):
         return {
             '_index': index,
