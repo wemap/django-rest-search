@@ -13,6 +13,9 @@ logger = logging.getLogger('rest_search')
 
 
 def create_index():
+    """
+    Creates the ElasticSearch index if it does not exist.
+    """
     conns = {}
     for indexer in _get_registered():
         es = get_elasticsearch(indexer)
@@ -50,7 +53,7 @@ def delete_index(es):
 @shared_task
 def patch_index(updates):
     """
-    Performs a partial update of the ElasticSearch.
+    Performs a partial update of the ElasticSearch index.
     """
     updates_str = ['%s: %d items' % (k, len(v)) for k, v in updates.items()]
     logger.info('Patching index (%s)' % ', '.join(updates_str))
