@@ -60,7 +60,7 @@ def patch_index(updates):
         for indexer in indexers:
             if indexer.doc_type == doc_type:
                 es = get_elasticsearch(indexer)
-                bulk(es, indexer.partial_items(pks), raise_on_error=False)
+                bulk(es, indexer.partial_items(pks))
 
 
 @shared_task
@@ -73,8 +73,5 @@ def update_index(remove=True):
     create_index()
 
     for indexer in _get_registered():
-        # perform full resync
         es = get_elasticsearch(indexer)
-        bulk(es, indexer.iterate_items(remove=remove),
-             raise_on_error=False,
-             request_timeout=30)
+        bulk(es, indexer.iterate_items(remove=remove))
