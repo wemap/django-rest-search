@@ -21,6 +21,23 @@ class FormsTest(TestCase):
             'match_all': {}
         })
 
+    def test_with_id(self):
+        form = BookSearchForm({
+            'id': 1,
+        })
+        self.assertTrue(form.is_valid())
+        self.assertEqual(form.get_query(), {
+            'bool': {
+                'filter': [
+                    {
+                        'term': {
+                            'id': 1
+                        }
+                    }
+                ]
+            }
+        })
+
     def test_with_query(self):
         form = BookSearchForm({
             'query': 'foo',

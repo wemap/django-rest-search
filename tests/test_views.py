@@ -29,6 +29,7 @@ class ViewsTest(TestCase):
                         "_score": 1,
                         "_source": {
                             'id': 1,
+                            'tags': ['foo', 'bar'],
                             'title': 'New book',
                         },
                         "_type": "Book"
@@ -45,3 +46,23 @@ class ViewsTest(TestCase):
             'title': 'New book',
         })
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {
+            'count': 1,
+            'next': None,
+            'previous': None,
+            'results': [
+                {
+                    'tags': ['foo', 'bar'],
+                    'title': 'New book',
+                }
+            ]
+        })
+
+    def test_search_invalid(self):
+        response = self.client.get('/books/search', {
+            'id': 'a',
+        })
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data, {
+            'id': ['Enter a whole number.']
+        })

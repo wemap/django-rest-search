@@ -6,11 +6,19 @@ from rest_search.forms import SearchForm
 
 
 class BookSearchForm(SearchForm):
+    id = forms.IntegerField(required=False)
     query = forms.CharField(required=False)
     tags = forms.CharField(required=False)
 
     def get_filter_clauses(self):
         clauses = []
+
+        if self.cleaned_data['id']:
+            clauses.append({
+                'term': {
+                    'id': self.cleaned_data['id']
+                }
+            })
 
         if self.cleaned_data['tags']:
             for tag in self.cleaned_data['tags'].split(','):
