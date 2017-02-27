@@ -15,3 +15,13 @@ class BookCreate(CreateAPIView):
 class BookSearch(SearchAPIView):
     form_class = BookSearchForm
     indexer_class = BookIndexer
+
+
+class BookSearchSorted(SearchAPIView):
+    form_class = BookSearchForm
+    indexer_class = BookIndexer
+
+    def get_sort(self):
+        return [
+            {'id': {'order': 'desc'}},
+        ]

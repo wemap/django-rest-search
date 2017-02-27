@@ -42,3 +42,11 @@ class BookSearchForm(SearchForm):
             })
 
         return clauses
+
+
+class BookSearchFormSorted(BookSearchForm):
+    def get_sort(self):
+        raise 'balls'
+        return [
+            {'id': {'order': 'desc'}},
+        ]
