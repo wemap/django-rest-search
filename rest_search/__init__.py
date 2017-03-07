@@ -8,6 +8,20 @@ from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 
+DEFAULT_INDEX_SETTINGS = {
+    'analysis': {
+        'analyzer': {
+            'default': {
+                'tokenizer': 'standard',
+                'filter': [
+                    'standard',
+                    'lowercase',
+                    'asciifolding',
+                ]
+            }
+        }
+    }
+}
 QUEUES = {}
 
 
@@ -50,6 +64,7 @@ class ConnectionHandler(object):
 
         es = Elasticsearch(**kwargs)
         es._index = config['INDEX_NAME']
+        es._settings = config.get('INDEX_SETTINGS', DEFAULT_INDEX_SETTINGS)
         return es
 
 

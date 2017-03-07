@@ -22,20 +22,7 @@ def create_index():
         if es not in conns:
             conns[es] = {
                 'mappings': {},
-                'settings': {
-                    'analysis': {
-                        'analyzer': {
-                            'default': {
-                                'tokenizer': 'standard',
-                                'filter': [
-                                    'standard',
-                                    'lowercase',
-                                    'asciifolding',
-                                ]
-                            },
-                        }
-                    }
-                }
+                'settings': es._settings
             }
         if indexer.mappings is not None:
             mappings = conns[es]['mappings']
