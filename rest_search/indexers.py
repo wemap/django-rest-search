@@ -43,7 +43,7 @@ class Indexer(object):
 
         # remove obsolete items
         if remove:
-            for i in scan(es, index=index, doc_type=self.doc_type, fields=[]):
+            for i in scan(es, index=index, doc_type=self.doc_type, query={'stored_fields': []}):
                 pk = int(i['_id'])
                 if pk not in ids:
                     yield self.__remove_item(pk, index=index)
