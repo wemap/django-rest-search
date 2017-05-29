@@ -1,6 +1,8 @@
 aws-requests-auth >= 0.3.0
 celery >= 3.1
 certifi
+coreapi
+coreschema
 django >= 1.9
 djangorestframework >= 3.4
 elasticsearch >= 5.0.0, < 6.0.0
