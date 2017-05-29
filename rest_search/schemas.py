@@ -3,6 +3,7 @@
 import coreapi
 import coreschema
 from django import forms
+from django.utils.encoding import force_text
 
 
 def get_form_schema(form_class):
@@ -23,6 +24,9 @@ def get_form_field_schema(field):
     """
     Returns the coreapi schema for the given form field.
     """
+    title = force_text(field.label) if field.label else ''
+    description = force_text(field.help_text) if field.help_text else ''
+
     if isinstance(field, forms.BooleanField):
         field_class = coreschema.Boolean
     elif isinstance(field, forms.FloatField):
@@ -31,4 +35,5 @@ def get_form_field_schema(field):
         field_class = coreschema.Integer
     else:
         field_class = coreschema.String
-    return field_class(description=field.help_text)
+
+    return field_class(description=description, title=title)
