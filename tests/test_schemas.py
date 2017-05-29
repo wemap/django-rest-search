@@ -3,6 +3,7 @@
 import coreschema
 from django import forms
 from django.test import TestCase
+from rest_framework.schemas import SchemaGenerator
 from rest_search.forms import SearchForm
 from rest_search.schemas import get_form_field_schema, get_form_schema
 
@@ -42,3 +43,20 @@ class FormSchemaTest(TestCase):
         fields = get_form_schema(BookSearchForm)
         self.assertEqual(len(fields), 3)
         self.assertEqual(fields[0].name, 'id')
+        self.assertEqual(fields[1].name, 'query')
+        self.assertEqual(fields[2].name, 'tags')
+
+
+class SchemaGeneratorTest(TestCase):
+    def test_schema(self):
+        generator = SchemaGenerator()
+        schema = generator.get_schema()
+        self.assertTrue('books' in schema)
+        self.assertTrue('search' in schema['books'])
+        self.assertTrue('list' in schema['books']['search'])
+
+        fields = schema['books']['search']['list'].fields
+        self.assertEqual(len(fields), 3)
+        self.assertEqual(fields[0].name, 'id')
+        self.assertEqual(fields[1].name, 'query')
+        self.assertEqual(fields[2].name, 'tags')

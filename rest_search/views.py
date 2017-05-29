@@ -1,11 +1,24 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import BaseFilterBackend
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 
+from rest_search.schemas import get_form_schema
+
+
+class SearchFilterBackend(BaseFilterBackend):
+    """
+    Dummy filter backend to enable API documentation.
+    """
+    def get_schema_fields(self, view):
+        return get_form_schema(view.form_class)
+
 
 class SearchAPIView(APIView):
+    filter_backends = (SearchFilterBackend,)
+
     def get(self, request, *args, **kwargs):
         query = self.get_query()
         sort = self.get_sort()
