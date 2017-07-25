@@ -140,7 +140,7 @@ class TasksTest(TestCase):
         ])
 
     @patch('rest_search.tasks.create_index')
-    @patch('rest_search.tasks.scan')
+    @patch('rest_search.indexers.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index(self, mock_bulk, mock_scan, mock_create_index):
         bulk_log = []
@@ -167,7 +167,7 @@ class TasksTest(TestCase):
         ])
 
     @patch('rest_search.tasks.create_index')
-    @patch('rest_search.tasks.scan')
+    @patch('rest_search.indexers.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index_no_delete(self, mock_bulk, mock_scan, mock_create_index):
         bulk_log = []
@@ -207,7 +207,7 @@ class TasksTest(TestCase):
         ])
 
     @patch('rest_search.tasks.create_index')
-    @patch('rest_search.tasks.scan')
+    @patch('rest_search.indexers.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index_with_deleted(self, mock_bulk, mock_scan, mock_create_index):
         bulk_log = []
