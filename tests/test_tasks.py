@@ -8,6 +8,14 @@ from tests.models import Book, Tag
 from tests.utils import patch
 
 
+class MockBulk(object):
+    def __init__(self):
+        self.actions = []
+
+    def __call__(self, es, actions):
+        self.actions.extend(actions)
+
+
 class TasksTest(TestCase):
     def setUp(self):
         tags = [Tag.objects.create(slug=slug) for slug in ['foo', 'bar']]
@@ -70,15 +78,12 @@ class TasksTest(TestCase):
 
     @patch('rest_search.tasks.bulk')
     def test_patch_index(self, mock_bulk):
-        bulk_log = []
-        def consume_actions(es, actions):
-            bulk_log.extend(actions)
-        mock_bulk.side_effect = consume_actions
+        mock_bulk.side_effect = MockBulk()
 
         patch_index({
             'Book': [1],
         })
-        self.assertEqual(bulk_log, [
+        self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
                 '_index': 'bogus',
@@ -93,15 +98,12 @@ class TasksTest(TestCase):
 
     @patch('rest_search.tasks.bulk')
     def test_patch_index_only_delete(self, mock_bulk):
-        bulk_log = []
-        def consume_actions(es, actions):
-            bulk_log.extend(actions)
-        mock_bulk.side_effect = consume_actions
+        mock_bulk.side_effect = MockBulk()
 
         patch_index({
             'Book': [2],
         })
-        self.assertEqual(bulk_log, [
+        self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 2,
                 '_index': 'bogus',
@@ -112,15 +114,12 @@ class TasksTest(TestCase):
 
     @patch('rest_search.tasks.bulk')
     def test_patch_index_with_delete(self, mock_bulk):
-        bulk_log = []
-        def consume_actions(es, actions):
-            bulk_log.extend(actions)
-        mock_bulk.side_effect = consume_actions
+        mock_bulk.side_effect = MockBulk()
 
         patch_index({
             'Book': [1, 2],
         })
-        self.assertEqual(bulk_log, [
+        self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
                 '_index': 'bogus',
@@ -143,17 +142,14 @@ class TasksTest(TestCase):
     @patch('rest_search.indexers.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index(self, mock_bulk, mock_scan, mock_create_index):
-        bulk_log = []
-        def consume_actions(es, actions):
-            bulk_log.extend(actions)
-        mock_bulk.side_effect = consume_actions
+        mock_bulk.side_effect = MockBulk()
 
         # nothing in index
         mock_scan.return_value = []
         update_index()
         mock_create_index.assert_called_once_with()
 
-        self.assertEqual(bulk_log, [
+        self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
                 '_index': 'bogus',
@@ -170,10 +166,7 @@ class TasksTest(TestCase):
     @patch('rest_search.indexers.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index_no_delete(self, mock_bulk, mock_scan, mock_create_index):
-        bulk_log = []
-        def consume_actions(es, actions):
-            bulk_log.extend(actions)
-        mock_bulk.side_effect = consume_actions
+        mock_bulk.side_effect = MockBulk()
 
         # books : 1 (still there), 1001 (gone)
         mock_scan.return_value = [
@@ -193,7 +186,7 @@ class TasksTest(TestCase):
         update_index(remove=False)
         mock_create_index.assert_called_once_with()
 
-        self.assertEqual(bulk_log, [
+        self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
                 '_index': 'bogus',
@@ -210,10 +203,7 @@ class TasksTest(TestCase):
     @patch('rest_search.indexers.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index_with_deleted(self, mock_bulk, mock_scan, mock_create_index):
-        bulk_log = []
-        def consume_actions(es, actions):
-            bulk_log.extend(actions)
-        mock_bulk.side_effect = consume_actions
+        mock_bulk.side_effect = MockBulk()
 
         # books : 1 (still there), 1001 (gone)
         mock_scan.return_value = [
@@ -233,7 +223,7 @@ class TasksTest(TestCase):
         update_index()
         mock_create_index.assert_called_once_with()
 
-        self.assertEqual(bulk_log, [
+        self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
                 '_index': 'bogus',

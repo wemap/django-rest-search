@@ -110,8 +110,8 @@ def _patch_index(indexer, pks):
 
 
 def _update_index(indexer, remove):
-    es_it = indexer.scan(query={'stored_fields': []})
-    old_pks = set([int(i['_id']) for i in es_it])
+    scan = indexer.scan(query={'stored_fields': []})
+    old_pks = set([int(i['_id']) for i in scan])
 
     # index current items
     queryset = indexer.get_queryset()
