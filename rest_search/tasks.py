@@ -3,10 +3,10 @@
 import logging
 
 from celery import shared_task
-from elasticsearch.helpers import bulk
+from elasticsearch.helpers import bulk, scan
 
 from rest_search import get_elasticsearch
-from rest_search.indexers import _get_registered
+from rest_search.indexers import bulk_iterate, _get_registered
 
 
 logger = logging.getLogger('rest_search')
@@ -34,6 +34,9 @@ def create_index():
 
 
 def delete_index(es):
+    """
+    Deletes the ElasticSearch index.
+    """
     return es.indices.delete(index=es._index, ignore=404)
 
 
@@ -49,8 +52,7 @@ def patch_index(updates):
     for doc_type, pks in updates.items():
         for indexer in indexers:
             if indexer.doc_type == doc_type:
-                es = get_elasticsearch(indexer)
-                bulk(es, indexer.partial_items(pks))
+                _patch_index(indexer, pks)
 
 
 @shared_task
@@ -63,5 +65,64 @@ def update_index(remove=True):
     create_index()
 
     for indexer in _get_registered():
-        es = get_elasticsearch(indexer)
-        bulk(es, indexer.iterate_items(remove=remove))
+        _update_index(indexer, remove=remove)
+
+
+def _index_item(item, indexer, index):
+    return {
+        '_index': index,
+        '_type': indexer.doc_type,
+        '_id': item.pk,
+        '_source': indexer.serializer_class(item).data
+    }
+
+
+def _delete_item(pk, indexer, index):
+    return {
+        '_index': index,
+        '_type': indexer.doc_type,
+        '_id': pk,
+        '_op_type': 'delete',
+    }
+
+
+def _patch_index(indexer, pks):
+    es = get_elasticsearch(indexer)
+    index = es._index
+    queryset = indexer.get_queryset().filter(pk__in=pks)
+
+    def generate():
+        removed = set(pks)
+
+        # index current items
+        for item in bulk_iterate(queryset):
+            removed.discard(item.pk)
+            yield _index_item(item, indexer=indexer, index=index)
+
+        # remove obsolete items
+        for pk in removed:
+            yield _delete_item(pk, indexer=indexer, index=index)
+
+    bulk(es, generate())
+
+
+def _update_index(indexer, remove):
+    es = get_elasticsearch(indexer)
+    index = es._index
+    queryset = indexer.get_queryset()
+
+    def generate():
+        # index current items
+        ids = set()
+        for item in bulk_iterate(queryset):
+            ids.add(item.pk)
+            yield _index_item(item, indexer=indexer, index=index)
+
+        # remove obsolete items
+        if remove:
+            for i in scan(es, index=index, doc_type=indexer.doc_type, query={'stored_fields': []}):
+                pk = int(i['_id'])
+                if pk not in ids:
+                    yield _delete_item(pk, indexer=indexer, index=index)
+
+    bulk(es, generate())

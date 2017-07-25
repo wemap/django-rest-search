@@ -131,7 +131,7 @@ class TasksTest(TestCase):
         ])
 
     @patch('rest_search.tasks.create_index')
-    @patch('rest_search.indexers.scan')
+    @patch('rest_search.tasks.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index(self, mock_bulk, mock_scan, mock_create_index):
         # nothing in index
@@ -154,9 +154,8 @@ class TasksTest(TestCase):
             }
         ])
 
-
     @patch('rest_search.tasks.create_index')
-    @patch('rest_search.indexers.scan')
+    @patch('rest_search.tasks.scan')
     @patch('rest_search.tasks.bulk')
     def test_update_index_with_deleted(self, mock_bulk, mock_scan, mock_create_index):
         # books : 1 (still there), 1001 (gone)

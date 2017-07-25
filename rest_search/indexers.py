@@ -27,48 +27,6 @@ class Indexer(object):
     def __init__(self):
         self.doc_type = self.serializer_class.Meta.model.__name__
 
-    def iterate_items(self, remove=True):
-        """
-        Generates items to perform a full resync of the index.
-        """
-        es = get_elasticsearch(self)
-        index = es._index
-        queryset = self.get_queryset()
-
-        # index current items
-        ids = set()
-        for item in bulk_iterate(queryset):
-            ids.add(item.pk)
-            yield self.__add_item(item, index=index)
-
-        # remove obsolete items
-        if remove:
-            for i in scan(es, index=index, doc_type=self.doc_type, query={'stored_fields': []}):
-                pk = int(i['_id'])
-                if pk not in ids:
-                    yield self.__remove_item(pk, index=index)
-
-    def partial_items(self, pks):
-        """
-        Generates items to perform a partial update of the index.
-
-        pks is a list of primary keys of items which have changed
-        or been deleted.
-        """
-        es = get_elasticsearch(self)
-        index = es._index
-        queryset = self.get_queryset().filter(pk__in=pks)
-
-        # index current items
-        removed = set(pks)
-        for item in bulk_iterate(queryset):
-            removed.discard(item.pk)
-            yield self.__add_item(item, index=index)
-
-        # remove obsolete items
-        for pk in removed:
-            yield self.__remove_item(pk, index=index)
-
     def map_results(self, results):
         """
         Removes ES-specific fields from results.
@@ -87,22 +45,6 @@ class Indexer(object):
     def search(self, **kwargs):
         es = get_elasticsearch(self)
         return es.search(index=es._index, doc_type=self.doc_type, **kwargs)
-
-    def __add_item(self, item, index):
-        return {
-            '_index': index,
-            '_type': self.doc_type,
-            '_id': item.pk,
-            '_source': self.serializer_class(item).data
-        }
-
-    def __remove_item(self, pk, index):
-        return {
-            '_index': index,
-            '_type': self.doc_type,
-            '_id': pk,
-            '_op_type': 'delete',
-        }
 
 
 def _get_registered():
