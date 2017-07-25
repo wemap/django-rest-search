@@ -157,6 +157,43 @@ class TasksTest(TestCase):
     @patch('rest_search.tasks.create_index')
     @patch('rest_search.tasks.scan')
     @patch('rest_search.tasks.bulk')
+    def test_update_index_no_delete(self, mock_bulk, mock_scan, mock_create_index):
+        # books : 1 (still there), 1001 (gone)
+        mock_scan.return_value = [
+            {
+                '_id': '1',
+                '_index': 'bogus',
+                '_score': 0.0,
+                '_type': 'Book'
+            },
+            {
+                '_id': '1001',
+                '_index': 'bogus',
+                '_score': 0.0,
+                '_type': 'Book'
+            },
+        ]
+        update_index(remove=False)
+        mock_create_index.assert_called_once_with()
+
+        self.assertEqual(len(mock_bulk.call_args_list), 1)
+        operations = list(mock_bulk.call_args_list[0][0][1])
+        self.assertEqual(operations, [
+            {
+                '_id': 1,
+                '_index': 'bogus',
+                '_source': {
+                    'id': 1,
+                    'tags': ['foo', 'bar'],
+                    'title': 'Some book',
+                },
+                '_type': 'Book',
+            }
+        ])
+
+    @patch('rest_search.tasks.create_index')
+    @patch('rest_search.tasks.scan')
+    @patch('rest_search.tasks.bulk')
     def test_update_index_with_deleted(self, mock_bulk, mock_scan, mock_create_index):
         # books : 1 (still there), 1001 (gone)
         mock_scan.return_value = [
