@@ -79,7 +79,7 @@ def _delete_items(indexer, pks):
             '_op_type': 'delete',
         }
 
-    bulk(es, map(mapper, pks))
+    bulk(es, map(mapper, pks), raise_on_error=False)
 
 
 def _index_items(indexer, queryset):

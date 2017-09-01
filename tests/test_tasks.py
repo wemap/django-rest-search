@@ -12,7 +12,7 @@ class MockBulk(object):
     def __init__(self):
         self.actions = []
 
-    def __call__(self, es, actions):
+    def __call__(self, es, actions, raise_on_error=True):
         self.actions.extend(actions)
 
 
