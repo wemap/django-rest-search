@@ -26,7 +26,7 @@ Add the middleware to flush ElasticSearch updates to a celery task.
 
 .. code-block:: python
 
-    MIDDLEWARE_CLASSES = [
+    MIDDLEWARE = [
         ...
         'rest_search.middleware.FlushUpdatesMiddleware',
     ]
