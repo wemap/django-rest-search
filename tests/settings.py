@@ -12,7 +12,7 @@ DATABASES = {
     }
 }
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'rest_search.middleware.FlushUpdatesMiddleware',
 ]

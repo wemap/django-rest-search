@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from django.utils.deprecation import MiddlewareMixin
 from rest_search import queue_flush
 
 
-class FlushUpdatesMiddleware(object):
+class FlushUpdatesMiddleware(MiddlewareMixin):
     """
     Middleware that flushes ElasticSearch updates.
     """
