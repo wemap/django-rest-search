@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from tests.indexers import BookIndexer
 from tests.models import Book, Tag
-from tests.utils import patch
+from unittest.mock import patch
 
 
 class IndexersTest(TestCase):

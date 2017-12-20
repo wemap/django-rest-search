@@ -5,7 +5,7 @@ from rest_search import connections
 from rest_search.tasks import (create_index, delete_index, patch_index,
                                update_index)
 from tests.models import Book, Tag
-from tests.utils import patch
+from unittest.mock import patch
 
 
 class MockBulk(object):

@@ -3,7 +3,7 @@ celery >= 3.1
 certifi
 coreapi
 coreschema
-django >= 1.9
+django >= 1.10, < 2.0
 djangorestframework >= 3.4
 elasticsearch >= 5.0.0, < 6.0.0
 requests >= 2.9

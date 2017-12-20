@@ -3,7 +3,7 @@
 from django.test import TestCase, override_settings
 from rest_search import connections
 
-from tests.utils import patch
+from unittest.mock import patch
 
 
 class ConnectionTest(TestCase):

@@ -2,7 +2,7 @@
 
 from django.test import TestCase
 
-from tests.utils import patch
+from unittest.mock import patch
 
 
 class ViewsTest(TestCase):

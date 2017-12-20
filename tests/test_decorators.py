@@ -4,7 +4,7 @@ from django.test import TestCase
 from rest_search.decorators import flush_updates
 
 from tests.models import Book
-from tests.utils import patch
+from unittest.mock import patch
 
 
 class DecoratorsTest(TestCase):
