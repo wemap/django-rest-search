@@ -16,6 +16,12 @@ class FormFieldSchemaTest(TestCase):
         core_field = get_form_field_schema(form_field)
         self.assertTrue(isinstance(core_field, coreschema.Boolean))
 
+    def test_datetime(self):
+        form_field = forms.DateTimeField()
+        core_field = get_form_field_schema(form_field)
+        self.assertTrue(isinstance(core_field, coreschema.String))
+        self.assertEqual(core_field.format, 'date-time')
+
     def test_char(self):
         form_field = forms.CharField()
         core_field = get_form_field_schema(form_field)

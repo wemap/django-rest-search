@@ -29,6 +29,8 @@ def get_form_field_schema(field):
 
     if isinstance(field, forms.BooleanField):
         field_class = coreschema.Boolean
+    elif isinstance(field, forms.DateTimeField):
+        return coreschema.String(description=description, title=title, format='date-time')
     elif isinstance(field, forms.FloatField):
         field_class = coreschema.Number
     elif isinstance(field, (forms.IntegerField, forms.ModelChoiceField)):
