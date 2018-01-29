@@ -36,8 +36,7 @@ class TasksTest(TestCase):
                     'Book': {
                         'properties': {
                             'tags': {
-                                'index': 'not_analyzed',
-                                'type': 'string',
+                                'type': 'keyword',
                             }
                         }
                     }

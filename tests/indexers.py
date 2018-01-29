@@ -10,8 +10,7 @@ class BookIndexer(indexers.Indexer):
     mappings = {
         'properties': {
             'tags': {
-                'type': 'string',
-                'index': 'not_analyzed',
+                'type': 'keyword',
             }
         }
     }
