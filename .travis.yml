@@ -1,5 +1,5 @@
 after_success: coveralls
 install: pip install coveralls tox
 language: python
-python: 3.4
+python: 3.5
 script: tox
