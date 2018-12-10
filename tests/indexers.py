@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from rest_search import indexers
-
 from tests.models import Book
 from tests.serializers import BookSerializer
 

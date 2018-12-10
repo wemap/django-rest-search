@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django.test import TestCase
-from rest_search.decorators import flush_updates
-
-from tests.models import Book
 from unittest.mock import patch
+
+from django.test import TestCase
+
+from rest_search.decorators import flush_updates
+from tests.models import Book
 
 
 class DecoratorsTest(TestCase):

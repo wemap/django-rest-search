@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from rest_framework.generics import CreateAPIView
-from rest_search.views import SearchAPIView
 
+from rest_search.views import SearchAPIView
 from tests.forms import BookSearchForm
 from tests.indexers import BookIndexer
 from tests.serializers import BookSerializer

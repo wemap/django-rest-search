@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.utils.deprecation import MiddlewareMixin
+
 from rest_search import queue_flush
 
 

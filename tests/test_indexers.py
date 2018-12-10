@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from unittest.mock import patch
+
 from django.test import TestCase
 
 from tests.indexers import BookIndexer
 from tests.models import Book, Tag
-from unittest.mock import patch
 
 
 class IndexersTest(TestCase):

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 from django.test import TestCase
-from rest_search.forms import SearchForm
 
+from rest_search.forms import SearchForm
 from tests.forms import BookSearchForm
 
 

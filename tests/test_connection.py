@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from django.test import TestCase, override_settings
-from rest_search import connections
-
 from unittest.mock import patch
+
+from django.test import TestCase, override_settings
+
+from rest_search import connections
 
 
 class ConnectionTest(TestCase):

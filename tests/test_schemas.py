@@ -4,9 +4,9 @@ import coreschema
 from django import forms
 from django.test import TestCase
 from rest_framework.schemas import SchemaGenerator
+
 from rest_search.forms import SearchForm
 from rest_search.schemas import get_form_field_schema, get_form_schema
-
 from tests.forms import BookSearchForm
 
 

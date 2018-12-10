@@ -7,7 +7,6 @@ from aws_requests_auth.aws_auth import AWSRequestsAuth
 from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
-
 DEFAULT_INDEX_SETTINGS = {
     'analysis': {
         'analyzer': {

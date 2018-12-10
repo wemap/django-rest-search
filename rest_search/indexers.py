@@ -5,7 +5,6 @@ from elasticsearch.helpers import scan
 
 from rest_search import get_elasticsearch
 
-
 _REGISTERED_CLASSES = []
 
 

@@ -6,8 +6,7 @@ from celery import shared_task
 from elasticsearch.helpers import bulk
 
 from rest_search import get_elasticsearch
-from rest_search.indexers import bulk_iterate, _get_registered
-
+from rest_search.indexers import _get_registered, bulk_iterate
 
 logger = logging.getLogger('rest_search')
 
