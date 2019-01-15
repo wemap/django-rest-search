@@ -38,7 +38,6 @@ Configure your ElasticSearch connection.
     REST_SEARCH_CONNECTIONS = {
         'default': {
             'HOST': 'es.example.com',
-            'INDEX_NAME': 'some_index',
         }
     }
 

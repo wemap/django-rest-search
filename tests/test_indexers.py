@@ -19,7 +19,7 @@ class IndexersTest(TestCase):
         data = list(indexer.map_results([
             {
                 '_id': '1',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_source': {
                     'id': 1,
@@ -30,7 +30,7 @@ class IndexersTest(TestCase):
             },
             {
                 '_id': '2',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_source': {
                     'id': 2,
@@ -56,7 +56,7 @@ class IndexersTest(TestCase):
         mock_scan.return_value = [
             {
                 '_id': '1',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_type': 'Book'
             }

@@ -17,7 +17,6 @@ class ConnectionTest(TestCase):
             'AWS_REGION': 'some-region',
             'AWS_SECRET_KEY': 'some-secret-key',
             'HOST': 'es.example.com',
-            'INDEX_NAME': 'bogus',
         }
     })
     @patch('rest_search.Elasticsearch')

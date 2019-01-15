@@ -20,7 +20,6 @@ MIDDLEWARE = [
 REST_SEARCH_CONNECTIONS = {
     'default': {
         'HOST': 'es.example.com',
-        'INDEX_NAME': 'bogus',
     }
 }
 

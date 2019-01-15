@@ -29,9 +29,9 @@ class TasksTest(TestCase):
         mock_exists.return_value = False
 
         create_index()
-        mock_exists.assert_called_once_with('bogus')
+        mock_exists.assert_called_once_with('book')
         mock_create.assert_called_once_with(
-            index='bogus',
+            index='book',
             body={
                 'mappings': {
                     'Book': {
@@ -65,14 +65,14 @@ class TasksTest(TestCase):
         mock_exists.return_value = True
 
         create_index()
-        mock_exists.assert_called_once_with('bogus')
+        mock_exists.assert_called_once_with('book')
         mock_create.assert_not_called()
 
     @patch('elasticsearch.client.indices.IndicesClient.delete')
     def test_delete_index(self, mock_delete):
         delete_index()
         mock_delete.assert_called_once_with(
-            index='bogus',
+            index='book',
             ignore=404
         )
 
@@ -86,7 +86,7 @@ class TasksTest(TestCase):
         self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_source': {
                     'id': 1,
                     'tags': ['foo', 'bar'],
@@ -106,7 +106,7 @@ class TasksTest(TestCase):
         self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 2,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_op_type': 'delete',
                 '_type': 'Book',
             }
@@ -122,7 +122,7 @@ class TasksTest(TestCase):
         self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_source': {
                     'id': 1,
                     'tags': ['foo', 'bar'],
@@ -132,7 +132,7 @@ class TasksTest(TestCase):
             },
             {
                 '_id': 2,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_op_type': 'delete',
                 '_type': 'Book',
             }
@@ -152,7 +152,7 @@ class TasksTest(TestCase):
         self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_source': {
                     'id': 1,
                     'tags': ['foo', 'bar'],
@@ -172,13 +172,13 @@ class TasksTest(TestCase):
         mock_scan.return_value = [
             {
                 '_id': '1',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_type': 'Book'
             },
             {
                 '_id': '1001',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_type': 'Book'
             },
@@ -189,7 +189,7 @@ class TasksTest(TestCase):
         self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_source': {
                     'id': 1,
                     'tags': ['foo', 'bar'],
@@ -209,13 +209,13 @@ class TasksTest(TestCase):
         mock_scan.return_value = [
             {
                 '_id': '1',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_type': 'Book'
             },
             {
                 '_id': '1001',
-                '_index': 'bogus',
+                '_index': 'book',
                 '_score': 0.0,
                 '_type': 'Book'
             },
@@ -226,7 +226,7 @@ class TasksTest(TestCase):
         self.assertEqual(mock_bulk.side_effect.actions, [
             {
                 '_id': 1,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_source': {
                     'id': 1,
                     'tags': ['foo', 'bar'],
@@ -236,7 +236,7 @@ class TasksTest(TestCase):
             },
             {
                 '_id': 1001,
-                '_index': 'bogus',
+                '_index': 'book',
                 '_op_type': 'delete',
                 '_type': 'Book',
             }

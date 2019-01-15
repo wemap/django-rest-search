@@ -25,7 +25,7 @@ class ViewsTest(TestCase):
                 "hits": [
                     {
                         "_id": "1",
-                        "_index": "bogus",
+                        "_index": "book",
                         "_score": 1,
                         "_source": {
                             'id': 1,
@@ -67,7 +67,7 @@ class ViewsTest(TestCase):
                 'size': 20,
             },
             doc_type='Book',
-            index='bogus')
+            index='book')
 
     def test_search_invalid(self):
         response = self.client.get('/books/search', {
@@ -118,7 +118,7 @@ class ViewsTest(TestCase):
                 'size': 10,
             },
             doc_type='Book',
-            index='bogus')
+            index='book')
 
     @patch('elasticsearch.client.Elasticsearch.search')
     def test_search_sorted(self, mock_search):
@@ -132,7 +132,7 @@ class ViewsTest(TestCase):
                 "hits": [
                     {
                         "_id": "1",
-                        "_index": "bogus",
+                        "_index": "book",
                         "_score": 1,
                         "_source": {
                             'id': 1,
@@ -181,4 +181,4 @@ class ViewsTest(TestCase):
                 ]
             },
             doc_type='Book',
-            index='bogus')
+            index='book')

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.conf import settings
 from django.db.models.signals import post_delete, post_save
 from elasticsearch.helpers import scan
 
@@ -27,8 +26,7 @@ class Indexer(object):
     def __init__(self):
         self.doc_type = self.serializer_class.Meta.model.__name__
         if not hasattr(self, 'index'):
-            # NOTE: this will change when switching to single type per index
-            self.index = settings.REST_SEARCH_CONNECTIONS['default']['INDEX_NAME']
+            self.index = self.serializer_class.Meta.model.__name__.lower()
 
     def map_results(self, results):
         """
