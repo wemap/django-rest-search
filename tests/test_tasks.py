@@ -4,7 +4,6 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from rest_search import connections
 from rest_search.tasks import (create_index, delete_index, patch_index,
                                update_index)
 from tests.models import Book, Tag
@@ -71,7 +70,7 @@ class TasksTest(TestCase):
 
     @patch('elasticsearch.client.indices.IndicesClient.delete')
     def test_delete_index(self, mock_delete):
-        delete_index(connections['default'])
+        delete_index()
         mock_delete.assert_called_once_with(
             index='bogus',
             ignore=404

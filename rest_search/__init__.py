@@ -67,7 +67,7 @@ class ConnectionHandler(object):
         return es
 
 
-def get_elasticsearch(indexer=None):
+def get_elasticsearch(indexer):
     return connections['default']
 
 

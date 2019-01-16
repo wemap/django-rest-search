@@ -32,11 +32,13 @@ def create_index():
             es.indices.create(index=es._index, body=body)
 
 
-def delete_index(es):
+def delete_index():
     """
     Deletes the ElasticSearch index.
     """
-    return es.indices.delete(index=es._index, ignore=404)
+    for indexer in _get_registered():
+        es = get_elasticsearch(indexer)
+        es.indices.delete(index=es._index, ignore=404)
 
 
 @shared_task
