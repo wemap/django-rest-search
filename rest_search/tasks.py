@@ -18,18 +18,19 @@ def create_index():
     conns = {}
     for indexer in _get_registered():
         es = get_elasticsearch(indexer)
-        if es not in conns:
-            conns[es] = {
+        key = (es, indexer.index)
+        if key not in conns:
+            conns[key] = {
                 'mappings': {},
                 'settings': es._settings
             }
         if indexer.mappings is not None:
-            mappings = conns[es]['mappings']
+            mappings = conns[key]['mappings']
             mappings[indexer.doc_type] = indexer.mappings
 
-    for es, body in conns.items():
-        if not es.indices.exists(es._index):
-            es.indices.create(index=es._index, body=body)
+    for (es, index), body in conns.items():
+        if not es.indices.exists(index):
+            es.indices.create(index=index, body=body)
 
 
 def delete_index():
@@ -38,7 +39,7 @@ def delete_index():
     """
     for indexer in _get_registered():
         es = get_elasticsearch(indexer)
-        es.indices.delete(index=es._index, ignore=404)
+        es.indices.delete(index=indexer.index, ignore=404)
 
 
 @shared_task
@@ -74,7 +75,7 @@ def _delete_items(indexer, pks):
 
     def mapper(pk):
         return {
-            '_index': es._index,
+            '_index': indexer.index,
             '_type': indexer.doc_type,
             '_id': pk,
             '_op_type': 'delete',
@@ -90,7 +91,7 @@ def _index_items(indexer, queryset):
     def mapper(item):
         seen_pks.add(item.pk)
         return {
-            '_index': es._index,
+            '_index': indexer.index,
             '_type': indexer.doc_type,
             '_id': item.pk,
             '_source': indexer.serializer_class(item).data
