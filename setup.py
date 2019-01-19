@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
     name='djangorestsearch',
-    version='0.8.0',
+    version='0.8.1',
     url='https://github.com/wemap/django-rest-search',
     license='BSD',
     description='ElasticSearch integration for Django.',
@@ -23,7 +23,7 @@ setup(
     install_requires=[
         'aws-requests-auth>=0.3.0',
         'certifi>=2017.4.17',
-        'elasticsearch>=5.0.0,<6.0.0',
+        'elasticsearch>=6.0.0,<7.0.0',
     ],
     python_requires='>=3',
 )
