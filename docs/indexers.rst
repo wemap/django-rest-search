@@ -40,6 +40,13 @@ And finally you register the indexer::
 
     indexers.register(BookIndexer)
 
+Options
+-------
+
+When declaring an indexer, you can specify some additional properties:
+
+- `index`: the name of the ElasticSearch index, defaults to the model name in lowercase
+
 Index updates
 -------------
 
