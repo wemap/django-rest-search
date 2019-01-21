@@ -2,7 +2,6 @@
 
 from threading import local
 
-import certifi
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
@@ -45,8 +44,6 @@ class ConnectionHandler(object):
             'host': config['HOST'],
             'port': config.get('PORT', 9200),
             'use_ssl': config.get('USE_SSL', False),
-            'verify_certs': True,
-            'ca_certs': certifi.where()
         }
 
         if 'AWS_ACCESS_KEY' in config and \

@@ -22,7 +22,6 @@ setup(
     ],
     install_requires=[
         'aws-requests-auth>=0.3.0',
-        'certifi>=2017.4.17',
         'elasticsearch>=6.0.0,<7.0.0',
     ],
     python_requires='>=3',

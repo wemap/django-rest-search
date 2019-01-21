@@ -27,13 +27,11 @@ class ConnectionTest(TestCase):
         self.assertEqual(mock_elasticsearch.call_count, 1)
         self.assertEqual(mock_elasticsearch.call_args[0], ())
         self.assertEqual(sorted(mock_elasticsearch.call_args[1].keys()), [
-            'ca_certs',
             'connection_class',
             'host',
             'http_auth',
             'port',
             'use_ssl',
-            'verify_certs',
         ])
 
     @patch('rest_search.Elasticsearch')
@@ -44,9 +42,7 @@ class ConnectionTest(TestCase):
         self.assertEqual(mock_elasticsearch.call_count, 1)
         self.assertEqual(mock_elasticsearch.call_args[0], ())
         self.assertEqual(sorted(mock_elasticsearch.call_args[1].keys()), [
-            'ca_certs',
             'host',
             'port',
             'use_ssl',
-            'verify_certs',
         ])
