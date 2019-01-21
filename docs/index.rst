@@ -41,6 +41,25 @@ Configure your ElasticSearch connection.
         }
     }
 
+If you wish, you can customise the settings used when creating an index.
+
+.. code-block:: python
+
+   REST_SEARCH_INDEX_SETTINGS = {
+       'analysis': {
+           'analyzer': {
+               'default': {
+                   'tokenizer': 'standard',
+                   'filter': [
+                       'standard',
+                       'lowercase',
+                       'asciifolding',
+                   ]
+               }
+           }
+       }
+   }
+
 Contents
 --------
 

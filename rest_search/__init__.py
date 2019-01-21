@@ -61,9 +61,7 @@ class ConnectionHandler(object):
                 aws_region=config['AWS_REGION'],
                 aws_service='es')
 
-        es = Elasticsearch(**kwargs)
-        es._settings = config.get('INDEX_SETTINGS', DEFAULT_INDEX_SETTINGS)
-        return es
+        return Elasticsearch(**kwargs)
 
 
 def get_elasticsearch(indexer):

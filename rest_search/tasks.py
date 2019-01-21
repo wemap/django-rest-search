@@ -3,9 +3,10 @@
 import logging
 
 from celery import shared_task
+from django.conf import settings
 from elasticsearch.helpers import bulk
 
-from rest_search import get_elasticsearch
+from rest_search import DEFAULT_INDEX_SETTINGS, get_elasticsearch
 from rest_search.indexers import _get_registered, bulk_iterate
 
 logger = logging.getLogger('rest_search')
@@ -22,7 +23,8 @@ def create_index():
         if key not in conns:
             conns[key] = {
                 'mappings': {},
-                'settings': es._settings
+                'settings': getattr(settings, 'REST_SEARCH_INDEX_SETTINGS',
+                                    DEFAULT_INDEX_SETTINGS),
             }
         if indexer.mappings is not None:
             mappings = conns[key]['mappings']
