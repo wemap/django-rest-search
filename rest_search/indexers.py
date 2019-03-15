@@ -8,17 +8,6 @@ from rest_search import get_elasticsearch
 _REGISTERED_CLASSES = []
 
 
-def bulk_iterate(queryset, block_size=1000):
-    """
-    Iterates over a huge queryset in chunks of 1000 items.
-    """
-    total = queryset.count()
-    queryset = queryset.order_by('pk')
-    for start in range(0, total, block_size):
-        for item in queryset[start:start + block_size]:
-            yield item
-
-
 class Indexer(object):
     mappings = None
     private_properties = []

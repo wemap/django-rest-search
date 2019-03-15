@@ -7,7 +7,7 @@ from django.conf import settings
 from elasticsearch.helpers import bulk
 
 from rest_search import DEFAULT_INDEX_SETTINGS, get_elasticsearch
-from rest_search.indexers import _get_registered, bulk_iterate
+from rest_search.indexers import _get_registered
 
 logger = logging.getLogger('rest_search')
 
@@ -86,27 +86,31 @@ def _delete_items(indexer, pks):
     bulk(es, map(mapper, pks), raise_on_error=False)
 
 
-def _index_items(indexer, queryset):
+def _index_items(indexer, pks):
     es = get_elasticsearch(indexer)
     seen_pks = set()
 
-    def mapper(item):
-        seen_pks.add(item.pk)
-        return {
-            '_index': indexer.index,
-            '_type': indexer.doc_type,
-            '_id': item.pk,
-            '_source': indexer.serializer_class(item).data
-        }
+    def bulk_mapper(block_size=1000):
+        for i in range(0, len(pks), block_size):
+            chunk = pks[i:i + block_size]
+            qs = indexer.get_queryset().filter(pk__in=chunk)
+            data = indexer.serializer_class(qs, many=True).data
+            for item in data:
+                seen_pks.add(item['id'])
+                yield {
+                    '_index': indexer.index,
+                    '_type': indexer.doc_type,
+                    '_id': item['id'],
+                    '_source': item
+                }
 
-    bulk(es, map(mapper, bulk_iterate(queryset)))
+    bulk(es, bulk_mapper())
     return seen_pks
 
 
 def _patch_index(indexer, pks):
     # index current items
-    queryset = indexer.get_queryset().filter(pk__in=pks)
-    seen_pks = _index_items(indexer, queryset)
+    seen_pks = _index_items(indexer, pks)
 
     # remove obsolete items
     removed_pks = set(pks) - seen_pks
@@ -118,8 +122,9 @@ def _update_index(indexer, remove):
     old_pks = set([int(i['_id']) for i in scan])
 
     # index current items
-    queryset = indexer.get_queryset()
-    seen_pks = _index_items(indexer, queryset)
+    seen_pks = _index_items(
+        indexer,
+        sorted(indexer.get_queryset().values_list('pk', flat=True)))
 
     # remove obsolete items
     if remove:
