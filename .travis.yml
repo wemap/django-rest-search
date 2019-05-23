@@ -1,5 +1,5 @@
 after_success: coveralls
-install: pip install -r requirements.txt coverage coveralls flake8 isort
+install: pip install -r requirements.txt black coverage coveralls flake8 isort
 language: python
 python: 3.5
-script: make test
+script: make lint test
