@@ -7,6 +7,7 @@ class SearchMixin(object):
     """
     Mixin to help build ElasticSearch queries.
     """
+
     def get_query(self):
         """
         Returns the query to be executed by ElasticSearch.
@@ -14,21 +15,17 @@ class SearchMixin(object):
         return self._score_query(self._build_query())
 
     def _build_query(self):
-        query = {
-            'bool': {}
-        }
+        query = {"bool": {}}
 
-        for kind in ['filter', 'must', 'must_not', 'should']:
-            clauses = getattr(self, 'get_%s_clauses' % kind)()
+        for kind in ["filter", "must", "must_not", "should"]:
+            clauses = getattr(self, "get_%s_clauses" % kind)()
             if clauses:
-                query['bool'][kind] = clauses
+                query["bool"][kind] = clauses
 
-        if query['bool']:
+        if query["bool"]:
             return query
         else:
-            return {
-                'match_all': {}
-            }
+            return {"match_all": {}}
 
     def get_filter_clauses(self):
         return []
@@ -50,6 +47,7 @@ class SearchForm(SearchMixin, forms.Form):
     """
     Base form for building ElasticSearch queries.
     """
+
     def __init__(self, data, context={}):
         self.context = context
         super(SearchForm, self).__init__(data)

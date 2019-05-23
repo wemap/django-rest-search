@@ -9,6 +9,7 @@ def flush_updates(function):
     """
     Decorator that flushes ElasticSearch updates.
     """
+
     @functools.wraps(function)
     def wrap(*args, **kwargs):
         try:

@@ -9,11 +9,11 @@ from tests.models import Book
 
 
 class DecoratorsTest(TestCase):
-    @patch('rest_search.tasks.patch_index.delay')
+    @patch("rest_search.tasks.patch_index.delay")
     def test_flush_updates(self, mock_delay):
         @flush_updates
         def create_book():
-            return Book.objects.create(title='Some book')
+            return Book.objects.create(title="Some book")
 
         create_book()
-        mock_delay.assert_called_with({'Book': [1]})
+        mock_delay.assert_called_with({"Book": [1]})

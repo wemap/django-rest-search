@@ -6,18 +6,12 @@ from tests.serializers import BookSerializer
 
 
 class BookIndexer(indexers.Indexer):
-    mappings = {
-        'properties': {
-            'tags': {
-                'type': 'keyword',
-            }
-        }
-    }
-    private_properties = ['id']
+    mappings = {"properties": {"tags": {"type": "keyword"}}}
+    private_properties = ["id"]
     serializer_class = BookSerializer
 
     def get_queryset(self):
-        return Book.objects.prefetch_related('tags')
+        return Book.objects.prefetch_related("tags")
 
 
 indexers.register(BookIndexer)

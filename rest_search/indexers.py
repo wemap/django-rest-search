@@ -14,18 +14,20 @@ class Indexer(object):
 
     def __init__(self):
         self.doc_type = self.serializer_class.Meta.model.__name__
-        if not hasattr(self, 'index'):
+        if not hasattr(self, "index"):
             self.index = self.serializer_class.Meta.model.__name__.lower()
 
     def map_results(self, results):
         """
         Removes ES-specific fields from results.
         """
+
         def map_result_item(x):
-            item = x['_source']
+            item = x["_source"]
             for key in self.private_properties:
                 item.pop(key, None)
             return item
+
         return map(map_result_item, results)
 
     def scan(self, **kwargs):
@@ -49,10 +51,9 @@ def _instance_changed(sender, instance, **kwargs):
     Queues an update to the ElasticSearch index.
     """
     from rest_search import queue_add
+
     doc_type = instance.__class__.__name__
-    queue_add({
-        doc_type: [instance.pk],
-    })
+    queue_add({doc_type: [instance.pk]})
 
 
 def register(indexer_class):

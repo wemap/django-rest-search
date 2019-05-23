@@ -12,6 +12,7 @@ class SearchFilterBackend(BaseFilterBackend):
     """
     Dummy filter backend to enable API documentation.
     """
+
     def get_schema_fields(self, view):
         return get_form_schema(view.form_class)
 
@@ -29,21 +30,17 @@ class SearchAPIView(APIView):
         pagination.offset = pagination.get_offset(request)
         pagination.request = request
 
-        body = {
-            'query': query,
-            'size': pagination.limit,
-            'from': pagination.offset
-        }
+        body = {"query": query, "size": pagination.limit, "from": pagination.offset}
         if sort:
-            body['sort'] = sort
+            body["sort"] = sort
 
         # execute elasticsearch query
         indexer = self.get_indexer()
         res = indexer.search(body=body)
 
         # map back to expected format
-        items = list(indexer.map_results(res['hits']['hits']))
-        pagination.count = res['hits']['total']
+        items = list(indexer.map_results(res["hits"]["hits"]))
+        pagination.count = res["hits"]["total"]
         return pagination.get_paginated_response(items)
 
     def get_indexer(self):
@@ -53,9 +50,7 @@ class SearchAPIView(APIView):
         """
         Returns the 'query' element of the ElasticSearch request body.
         """
-        form = self.form_class(self.request.GET, context={
-            'request': self.request
-        })
+        form = self.form_class(self.request.GET, context={"request": self.request})
         if not form.is_valid():
             raise ValidationError(form.errors)
         return form.get_query()

@@ -9,6 +9,7 @@ class FlushUpdatesMiddleware(MiddlewareMixin):
     """
     Middleware that flushes ElasticSearch updates.
     """
+
     def process_response(self, request, response):
         queue_flush()
         return response

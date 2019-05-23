@@ -13,40 +13,32 @@ class BookSearchForm(SearchForm):
     def get_filter_clauses(self):
         clauses = []
 
-        if self.cleaned_data['id']:
-            clauses.append({
-                'term': {
-                    'id': self.cleaned_data['id']
-                }
-            })
+        if self.cleaned_data["id"]:
+            clauses.append({"term": {"id": self.cleaned_data["id"]}})
 
-        if self.cleaned_data['tags']:
-            for tag in self.cleaned_data['tags'].split(','):
-                clauses.append({
-                    'term': {
-                        'tags': tag
-                    }
-                })
+        if self.cleaned_data["tags"]:
+            for tag in self.cleaned_data["tags"].split(","):
+                clauses.append({"term": {"tags": tag}})
 
         return clauses
 
     def get_must_clauses(self):
         clauses = []
 
-        if self.cleaned_data['query']:
-            clauses.append({
-                'simple_query_string': {
-                    'fields': ['name'],
-                    'query': self.cleaned_data['query'],
+        if self.cleaned_data["query"]:
+            clauses.append(
+                {
+                    "simple_query_string": {
+                        "fields": ["name"],
+                        "query": self.cleaned_data["query"],
+                    }
                 }
-            })
+            )
 
         return clauses
 
 
 class BookSearchFormSorted(BookSearchForm):
     def get_sort(self):
-        raise 'balls'
-        return [
-            {'id': {'order': 'desc'}},
-        ]
+        raise "balls"
+        return [{"id": {"order": "desc"}}]

@@ -6,7 +6,7 @@ from django.utils.encoding import python_2_unicode_compatible
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
-    tags = models.ManyToManyField('Tag')
+    tags = models.ManyToManyField("Tag")
 
 
 @python_2_unicode_compatible

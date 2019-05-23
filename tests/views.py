@@ -22,6 +22,4 @@ class BookSearchSorted(SearchAPIView):
     indexer_class = BookIndexer
 
     def get_sort(self):
-        return [
-            {'id': {'order': 'desc'}},
-        ]
+        return [{"id": {"order": "desc"}}]

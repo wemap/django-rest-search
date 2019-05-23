@@ -20,7 +20,7 @@ class FormFieldSchemaTest(TestCase):
         form_field = forms.DateTimeField()
         core_field = get_form_field_schema(form_field)
         self.assertTrue(isinstance(core_field, coreschema.String))
-        self.assertEqual(core_field.format, 'date-time')
+        self.assertEqual(core_field.format, "date-time")
 
     def test_char(self):
         form_field = forms.CharField()
@@ -48,21 +48,21 @@ class FormSchemaTest(TestCase):
     def test_book(self):
         fields = get_form_schema(BookSearchForm)
         self.assertEqual(len(fields), 3)
-        self.assertEqual(fields[0].name, 'id')
-        self.assertEqual(fields[1].name, 'query')
-        self.assertEqual(fields[2].name, 'tags')
+        self.assertEqual(fields[0].name, "id")
+        self.assertEqual(fields[1].name, "query")
+        self.assertEqual(fields[2].name, "tags")
 
 
 class SchemaGeneratorTest(TestCase):
     def test_schema(self):
         generator = SchemaGenerator()
         schema = generator.get_schema()
-        self.assertTrue('books' in schema)
-        self.assertTrue('search' in schema['books'])
-        self.assertTrue('list' in schema['books']['search'])
+        self.assertTrue("books" in schema)
+        self.assertTrue("search" in schema["books"])
+        self.assertTrue("list" in schema["books"]["search"])
 
-        fields = schema['books']['search']['list'].fields
+        fields = schema["books"]["search"]["list"].fields
         self.assertEqual(len(fields), 3)
-        self.assertEqual(fields[0].name, 'id')
-        self.assertEqual(fields[1].name, 'query')
-        self.assertEqual(fields[2].name, 'tags')
+        self.assertEqual(fields[0].name, "id")
+        self.assertEqual(fields[1].name, "query")
+        self.assertEqual(fields[2].name, "tags")

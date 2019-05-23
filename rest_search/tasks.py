@@ -9,7 +9,7 @@ from elasticsearch.helpers import bulk
 from rest_search import DEFAULT_INDEX_SETTINGS, get_elasticsearch
 from rest_search.indexers import _get_registered
 
-logger = logging.getLogger('rest_search')
+logger = logging.getLogger("rest_search")
 
 
 def create_index():
@@ -22,12 +22,13 @@ def create_index():
         key = (es, indexer.index)
         if key not in conns:
             conns[key] = {
-                'mappings': {},
-                'settings': getattr(settings, 'REST_SEARCH_INDEX_SETTINGS',
-                                    DEFAULT_INDEX_SETTINGS),
+                "mappings": {},
+                "settings": getattr(
+                    settings, "REST_SEARCH_INDEX_SETTINGS", DEFAULT_INDEX_SETTINGS
+                ),
             }
         if indexer.mappings is not None:
-            mappings = conns[key]['mappings']
+            mappings = conns[key]["mappings"]
             mappings[indexer.doc_type] = indexer.mappings
 
     for (es, index), body in conns.items():
@@ -49,8 +50,8 @@ def patch_index(updates):
     """
     Performs a partial update of the ElasticSearch index.
     """
-    updates_str = ['%s: %d items' % (k, len(v)) for k, v in updates.items()]
-    logger.info('Patching index (%s)' % ', '.join(updates_str))
+    updates_str = ["%s: %d items" % (k, len(v)) for k, v in updates.items()]
+    logger.info("Patching index (%s)" % ", ".join(updates_str))
 
     indexers = _get_registered()
     for doc_type, pks in updates.items():
@@ -64,7 +65,7 @@ def update_index(remove=True):
     """
     Performs a full update of the ElasticSearch index.
     """
-    logger.info('Updating index')
+    logger.info("Updating index")
 
     create_index()
 
@@ -77,10 +78,10 @@ def _delete_items(indexer, pks):
 
     def mapper(pk):
         return {
-            '_index': indexer.index,
-            '_type': indexer.doc_type,
-            '_id': pk,
-            '_op_type': 'delete',
+            "_index": indexer.index,
+            "_type": indexer.doc_type,
+            "_id": pk,
+            "_op_type": "delete",
         }
 
     bulk(es, map(mapper, pks), raise_on_error=False)
@@ -92,16 +93,16 @@ def _index_items(indexer, pks):
 
     def bulk_mapper(block_size=1000):
         for i in range(0, len(pks), block_size):
-            chunk = pks[i:i + block_size]
+            chunk = pks[i : i + block_size]
             qs = indexer.get_queryset().filter(pk__in=chunk)
             data = indexer.serializer_class(qs, many=True).data
             for item in data:
-                seen_pks.add(item['id'])
+                seen_pks.add(item["id"])
                 yield {
-                    '_index': indexer.index,
-                    '_type': indexer.doc_type,
-                    '_id': item['id'],
-                    '_source': item
+                    "_index": indexer.index,
+                    "_type": indexer.doc_type,
+                    "_id": item["id"],
+                    "_source": item,
                 }
 
     bulk(es, bulk_mapper())
@@ -118,13 +119,13 @@ def _patch_index(indexer, pks):
 
 
 def _update_index(indexer, remove):
-    scan = indexer.scan(query={'stored_fields': []})
-    old_pks = set([int(i['_id']) for i in scan])
+    scan = indexer.scan(query={"stored_fields": []})
+    old_pks = set([int(i["_id"]) for i in scan])
 
     # index current items
     seen_pks = _index_items(
-        indexer,
-        sorted(indexer.get_queryset().values_list('pk', flat=True)))
+        indexer, sorted(indexer.get_queryset().values_list("pk", flat=True))
+    )
 
     # remove obsolete items
     if remove:

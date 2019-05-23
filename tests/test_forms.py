@@ -10,101 +10,55 @@ class FormsTest(TestCase):
     def test_base(self):
         form = SearchForm({})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.get_query(), {
-            'match_all': {}
-        })
+        self.assertEqual(form.get_query(), {"match_all": {}})
 
     def test_empty(self):
         form = BookSearchForm({})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.get_query(), {
-            'match_all': {}
-        })
+        self.assertEqual(form.get_query(), {"match_all": {}})
 
     def test_with_id(self):
-        form = BookSearchForm({
-            'id': 1,
-        })
+        form = BookSearchForm({"id": 1})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.get_query(), {
-            'bool': {
-                'filter': [
-                    {
-                        'term': {
-                            'id': 1
-                        }
-                    }
-                ]
-            }
-        })
+        self.assertEqual(form.get_query(), {"bool": {"filter": [{"term": {"id": 1}}]}})
 
     def test_with_query(self):
-        form = BookSearchForm({
-            'query': 'foo',
-        })
+        form = BookSearchForm({"query": "foo"})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.get_query(), {
-            'bool': {
-                'must': [
-                    {
-                        'simple_query_string': {
-                            'fields': ['name'],
-                            'query': u'foo'
-                        }
-                    }
-                ]
-            }
-        })
+        self.assertEqual(
+            form.get_query(),
+            {
+                "bool": {
+                    "must": [
+                        {"simple_query_string": {"fields": ["name"], "query": u"foo"}}
+                    ]
+                }
+            },
+        )
 
     def test_with_tags(self):
-        form = BookSearchForm({
-            'tags': 'tag1,tag2',
-        })
+        form = BookSearchForm({"tags": "tag1,tag2"})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.get_query(), {
-            'bool': {
-                'filter': [
-                    {
-                        'term': {
-                            'tags': 'tag1'
-                        }
-                    },
-                    {
-                        'term': {
-                            'tags': 'tag2'
-                        }
-                    }
-                ]
-            }
-        })
+        self.assertEqual(
+            form.get_query(),
+            {
+                "bool": {
+                    "filter": [{"term": {"tags": "tag1"}}, {"term": {"tags": "tag2"}}]
+                }
+            },
+        )
 
     def test_with_tags_and_query(self):
-        form = BookSearchForm({
-            'query': 'foo',
-            'tags': 'tag1,tag2',
-        })
+        form = BookSearchForm({"query": "foo", "tags": "tag1,tag2"})
         self.assertTrue(form.is_valid())
-        self.assertEqual(form.get_query(), {
-            'bool': {
-                'filter': [
-                    {
-                        'term': {
-                            'tags': 'tag1'
-                        }
-                    },
-                    {
-                        'term': {
-                            'tags': 'tag2'
-                        }
-                    }
-                ],
-                'must': [
-                    {
-                        'simple_query_string': {
-                            'fields': ['name'],
-                            'query': u'foo'
-                        }
-                    }
-                ],
-            }
-        })
+        self.assertEqual(
+            form.get_query(),
+            {
+                "bool": {
+                    "filter": [{"term": {"tags": "tag1"}}, {"term": {"tags": "tag2"}}],
+                    "must": [
+                        {"simple_query_string": {"fields": ["name"], "query": u"foo"}}
+                    ],
+                }
+            },
+        )

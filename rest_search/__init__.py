@@ -7,15 +7,11 @@ from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
 DEFAULT_INDEX_SETTINGS = {
-    'analysis': {
-        'analyzer': {
-            'default': {
-                'tokenizer': 'standard',
-                'filter': [
-                    'standard',
-                    'lowercase',
-                    'asciifolding',
-                ]
+    "analysis": {
+        "analyzer": {
+            "default": {
+                "tokenizer": "standard",
+                "filter": ["standard", "lowercase", "asciifolding"],
             }
         }
     }
@@ -34,35 +30,37 @@ class ConnectionHandler(object):
         if hasattr(self._connections, alias):
             return getattr(self._connections, alias)
 
-        conn = self.__create_connection(
-            settings.REST_SEARCH_CONNECTIONS[alias])
+        conn = self.__create_connection(settings.REST_SEARCH_CONNECTIONS[alias])
         setattr(self._connections, alias, conn)
         return conn
 
     def __create_connection(self, config):
         kwargs = {
-            'host': config['HOST'],
-            'port': config.get('PORT', 9200),
-            'use_ssl': config.get('USE_SSL', False),
+            "host": config["HOST"],
+            "port": config.get("PORT", 9200),
+            "use_ssl": config.get("USE_SSL", False),
         }
 
-        if 'AWS_ACCESS_KEY' in config and \
-           'AWS_SECRET_KEY' in config and \
-           'AWS_REGION' in config:
+        if (
+            "AWS_ACCESS_KEY" in config
+            and "AWS_SECRET_KEY" in config
+            and "AWS_REGION" in config
+        ):
 
-            kwargs['connection_class'] = RequestsHttpConnection
-            kwargs['http_auth'] = AWSRequestsAuth(
-                aws_access_key=config['AWS_ACCESS_KEY'],
-                aws_secret_access_key=config['AWS_SECRET_KEY'],
-                aws_host=config['HOST'],
-                aws_region=config['AWS_REGION'],
-                aws_service='es')
+            kwargs["connection_class"] = RequestsHttpConnection
+            kwargs["http_auth"] = AWSRequestsAuth(
+                aws_access_key=config["AWS_ACCESS_KEY"],
+                aws_secret_access_key=config["AWS_SECRET_KEY"],
+                aws_host=config["HOST"],
+                aws_region=config["AWS_REGION"],
+                aws_service="es",
+            )
 
         return Elasticsearch(**kwargs)
 
 
 def get_elasticsearch(indexer):
-    return connections['default']
+    return connections["default"]
 
 
 def queue_add(updates):
@@ -73,7 +71,7 @@ def queue_add(updates):
         'Book': [1, 2],
     }
     """
-    if getattr(settings, 'SEARCH_UPDATES_ENABLED', True):
+    if getattr(settings, "SEARCH_UPDATES_ENABLED", True):
         for doc_type, pks in updates.items():
             if doc_type in QUEUES:
                 QUEUES[doc_type].update(set(pks))
@@ -88,6 +86,7 @@ def queue_flush():
     global QUEUES
     if QUEUES:
         from rest_search.tasks import patch_index
+
         # convert sets to lists, otherwise they are not JSON-serializable
         args = {}
         for doc_type, pks in QUEUES.items():
