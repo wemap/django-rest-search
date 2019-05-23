@@ -14,31 +14,15 @@ logger = logging.getLogger("rest_search")
 
 def create_index():
     """
-    Creates the ElasticSearch index if it does not exist.
+    Creates the ElasticSearch indices if they do not exist.
     """
-    conns = {}
     for indexer in _get_registered():
-        es = get_elasticsearch(indexer)
-        key = (es, indexer.index)
-        if key not in conns:
-            conns[key] = {
-                "mappings": {},
-                "settings": getattr(
-                    settings, "REST_SEARCH_INDEX_SETTINGS", DEFAULT_INDEX_SETTINGS
-                ),
-            }
-        if indexer.mappings is not None:
-            mappings = conns[key]["mappings"]
-            mappings[indexer.doc_type] = indexer.mappings
-
-    for (es, index), body in conns.items():
-        if not es.indices.exists(index):
-            es.indices.create(index=index, body=body)
+        _create_index(indexer)
 
 
 def delete_index():
     """
-    Deletes the ElasticSearch index.
+    Deletes the ElasticSearch indices.
     """
     for indexer in _get_registered():
         es = get_elasticsearch(indexer)
@@ -48,10 +32,10 @@ def delete_index():
 @shared_task
 def patch_index(updates):
     """
-    Performs a partial update of the ElasticSearch index.
+    Performs a partial update of the ElasticSearch indices.
     """
     updates_str = ["%s: %d items" % (k, len(v)) for k, v in updates.items()]
-    logger.info("Patching index (%s)" % ", ".join(updates_str))
+    logger.info("Patching indices (%s)" % ", ".join(updates_str))
 
     indexers = _get_registered()
     for doc_type, pks in updates.items():
@@ -63,14 +47,30 @@ def patch_index(updates):
 @shared_task
 def update_index(remove=True):
     """
-    Performs a full update of the ElasticSearch index.
+    Performs a full update of the ElasticSearch indices.
     """
-    logger.info("Updating index")
+    logger.info("Updating indices")
 
     create_index()
 
     for indexer in _get_registered():
         _update_index(indexer, remove=remove)
+
+
+def _create_index(indexer):
+    body = {
+        "mappings": {},
+        "settings": getattr(
+            settings, "REST_SEARCH_INDEX_SETTINGS", DEFAULT_INDEX_SETTINGS
+        ),
+    }
+    if indexer.mappings is not None:
+        body["mappings"][indexer.doc_type] = indexer.mappings
+
+    es = get_elasticsearch(indexer)
+    if not es.indices.exists(indexer.index):
+        logger.info("Creating index %s" % indexer.index)
+        es.indices.create(index=indexer.index, body=body)
 
 
 def _delete_items(indexer, pks):
