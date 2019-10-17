@@ -5,7 +5,7 @@ from rest_framework.filters import BaseFilterBackend
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.views import APIView
 
-from rest_search.schemas import get_form_schema
+from rest_search.schemas import get_form_schema, get_form_schema_operation_parameters
 
 
 class SearchFilterBackend(BaseFilterBackend):
@@ -15,6 +15,9 @@ class SearchFilterBackend(BaseFilterBackend):
 
     def get_schema_fields(self, view):
         return get_form_schema(view.form_class)
+
+    def get_schema_operation_parameters(self, view):
+        return get_form_schema_operation_parameters(view.form_class)
 
 
 class SearchAPIView(APIView):

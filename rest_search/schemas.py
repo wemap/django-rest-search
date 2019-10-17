@@ -17,13 +17,13 @@ def get_form_schema(form_class):
                 location="query",
                 name=name,
                 required=field.required,
-                schema=get_form_field_schema(field),
+                schema=get_form_field_coreapi_schema(field),
             )
         )
     return fields
 
 
-def get_form_field_schema(field):
+def get_form_field_coreapi_schema(field):
     """
     Returns the coreapi schema for the given form field.
     """
@@ -44,3 +44,34 @@ def get_form_field_schema(field):
         field_class = coreschema.String
 
     return field_class(description=description, title=title)
+
+
+def get_form_schema_operation_parameters(form_class):
+    """
+    Return the openapi schema for the given form class.
+    """
+    fields = []
+    for name, field in form_class.declared_fields.items():
+        fields.append(
+            {
+                "name": name,
+                "required": field.required,
+                "in": "query",
+                "description": field.label if field.label is not None else name,
+                "schema": {"type": get_form_field_openapi_schema(field)},
+            }
+        )
+    return fields
+
+
+def get_form_field_openapi_schema(field):
+    if isinstance(field, forms.BooleanField):
+        return "boolean"
+    elif isinstance(field, forms.DateTimeField):
+        return "dateTime"
+    elif isinstance(field, forms.FloatField):
+        return "float"
+    elif isinstance(field, (forms.IntegerField, forms.ModelChoiceField)):
+        return "integer"
+    else:
+        return "string"
