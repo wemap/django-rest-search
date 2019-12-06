@@ -13,7 +13,7 @@ def flush_updates(function):
     @functools.wraps(function)
     def wrap(*args, **kwargs):
         try:
-            return function(*args)
+            return function(*args, **kwargs)
         finally:
             queue_flush()
 
