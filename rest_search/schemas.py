@@ -57,7 +57,7 @@ def get_form_schema_operation_parameters(form_class):
                 "name": name,
                 "required": field.required,
                 "in": "query",
-                "description": field.label if field.label is not None else name,
+                "description": force_text(field.help_text) if field.help_text else "",
                 "schema": {"type": get_form_field_openapi_schema(field)},
             }
         )

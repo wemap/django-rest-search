@@ -7,7 +7,7 @@ from rest_search.forms import SearchForm
 
 class BookSearchForm(SearchForm):
     id = forms.IntegerField(required=False)
-    query = forms.CharField(required=False)
+    query = forms.CharField(required=False, help_text="A full-text search on the name.")
     tags = forms.CharField(required=False)
 
     def get_filter_clauses(self):
@@ -40,5 +40,4 @@ class BookSearchForm(SearchForm):
 
 class BookSearchFormSorted(BookSearchForm):
     def get_sort(self):
-        raise "balls"
         return [{"id": {"order": "desc"}}]
