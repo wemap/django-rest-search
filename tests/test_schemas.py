@@ -48,23 +48,33 @@ class FormFieldCoreapiSchemaTest(TestCase):
 class FormFieldOpenapiSchemaTest(TestCase):
     def test_boolean(self):
         form_field = forms.BooleanField()
-        self.assertEqual(get_form_field_openapi_schema(form_field), "boolean")
+        self.assertEqual(get_form_field_openapi_schema(form_field), {"type": "boolean"})
+
+    def test_date(self):
+        form_field = forms.DateField()
+        self.assertEqual(
+            get_form_field_openapi_schema(form_field),
+            {"type": "string", "format": "date"},
+        )
 
     def test_datetime(self):
         form_field = forms.DateTimeField()
-        self.assertEqual(get_form_field_openapi_schema(form_field), "dateTime")
+        self.assertEqual(
+            get_form_field_openapi_schema(form_field),
+            {"type": "string", "format": "date-time"},
+        )
 
     def test_char(self):
         form_field = forms.CharField()
-        self.assertEqual(get_form_field_openapi_schema(form_field), "string")
+        self.assertEqual(get_form_field_openapi_schema(form_field), {"type": "string"})
 
     def test_float(self):
         form_field = forms.FloatField()
-        self.assertEqual(get_form_field_openapi_schema(form_field), "float")
+        self.assertEqual(get_form_field_openapi_schema(form_field), {"type": "number"})
 
     def test_integer(self):
         form_field = forms.IntegerField()
-        self.assertEqual(get_form_field_openapi_schema(form_field), "integer")
+        self.assertEqual(get_form_field_openapi_schema(form_field), {"type": "integer"})
 
 
 class FormSchemaTest(TestCase):

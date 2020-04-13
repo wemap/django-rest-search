@@ -58,7 +58,7 @@ def get_form_schema_operation_parameters(form_class):
                 "required": field.required,
                 "in": "query",
                 "description": force_text(field.help_text) if field.help_text else "",
-                "schema": {"type": get_form_field_openapi_schema(field)},
+                "schema": get_form_field_openapi_schema(field),
             }
         )
     return fields
@@ -66,12 +66,14 @@ def get_form_schema_operation_parameters(form_class):
 
 def get_form_field_openapi_schema(field):
     if isinstance(field, forms.BooleanField):
-        return "boolean"
+        return {"type": "boolean"}
+    elif isinstance(field, forms.DateField):
+        return {"type": "string", "format": "date"}
     elif isinstance(field, forms.DateTimeField):
-        return "dateTime"
+        return {"type": "string", "format": "date-time"}
     elif isinstance(field, forms.FloatField):
-        return "float"
+        return {"type": "number"}
     elif isinstance(field, (forms.IntegerField, forms.ModelChoiceField)):
-        return "integer"
+        return {"type": "integer"}
     else:
-        return "string"
+        return {"type": "string"}
