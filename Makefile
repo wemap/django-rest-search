@@ -14,3 +14,4 @@ test:
 	coverage erase
 	coverage run `which django-admin` test
 	coverage report
+	coverage xml
