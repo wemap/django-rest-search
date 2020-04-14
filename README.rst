@@ -1,13 +1,18 @@
 Django REST Search
 ==================
 
-.. image:: https://img.shields.io/travis/wemap/django-rest-search.svg
-    :target: https://travis-ci.org/wemap/django-rest-search
+|rtd| |pypi-v| |tests| |codecov|
 
-.. image:: https://img.shields.io/coveralls/wemap/django-rest-search.svg
-    :target: https://coveralls.io/github/wemap/django-rest-search
+.. |rtd| image:: https://readthedocs.org/projects/django-rest-search/badge/?version=latest
+   :target: https://django-rest-search.readthedocs.io/
 
-.. image:: https://img.shields.io/pypi/v/djangorestsearch.svg
+.. |tests| image:: https://github.com/wemap/django-rest-search/workflows/tests/badge.svg
+    :target: https://github.com/wemap/django-rest-search/actions
+
+.. |codecov| image:: https://img.shields.io/codecov/c/github/wemap/django-rest-search.svg
+    :target: https://codecov.io/gh/wemap/django-rest-search
+
+.. |pypi-v| image:: https://img.shields.io/pypi/v/djangorestsearch.svg
     :target: https://pypi.python.org/pypi/djangorestsearch
 
 Django REST Search provides a set of classes to facilitate the integration of
