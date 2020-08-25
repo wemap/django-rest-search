@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 
 
 def get_form_schema(form_class):
@@ -29,8 +29,8 @@ def get_form_field_coreapi_schema(field):
     """
     import coreschema
 
-    title = force_text(field.label) if field.label else ""
-    description = force_text(field.help_text) if field.help_text else ""
+    title = force_str(field.label) if field.label else ""
+    description = force_str(field.help_text) if field.help_text else ""
 
     if isinstance(field, forms.BooleanField):
         field_class = coreschema.Boolean
@@ -59,7 +59,7 @@ def get_form_schema_operation_parameters(form_class):
                 "name": name,
                 "required": field.required,
                 "in": "query",
-                "description": force_text(field.help_text) if field.help_text else "",
+                "description": force_str(field.help_text) if field.help_text else "",
                 "schema": get_form_field_openapi_schema(field),
             }
         )
