@@ -49,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'django-rest-search'
-copyright = u'2016-2017, Wemap SAS'
+copyright = u'2016-2021, Wemap SAS'
 author = u'Jeremy Lainé'
 
 # The version info for the project you're documenting, acts as replacement for
