@@ -6,9 +6,9 @@ all:
 	@exit 1
 
 lint:
-	flake8 rest_search tests
-	isort -c -df -rc rest_search tests
-	black --check --diff rest_search tests
+	flake8 src tests
+	isort -c -df -rc src tests
+	black --check --diff src tests
 
 test:
 	coverage erase
