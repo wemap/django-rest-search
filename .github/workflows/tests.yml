@@ -9,9 +9,9 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
-        python-version: 3.8
+        python-version: 3.9
     - name: Install packages
-      run: pip install -r requirements.txt black flake8 isort
+      run: pip install -e .[dev] black flake8 isort
     - name: Run linters
       run: make lint
 
@@ -19,17 +19,31 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python: [3.8, 3.7, 3.6, 3.5]
+        python: [3.9, 3.8, 3.7, 3.6]
     steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: ${{ matrix.python }}
     - name: Install packages
-      run: pip install -r requirements.txt coverage
+      run: pip install -e .[dev] coverage
     - name: Run test suite
       run: make test
     - name: Upload coverage report
       uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
+
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+      - name: Build source package
+        run: python setup.py sdist
+      - name: Publish to PyPI
+        if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          user: __token__
+          password: ${{ secrets.PYPI_TOKEN }}
