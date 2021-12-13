@@ -41,10 +41,9 @@ setup(
     extras_require={
         'dev': [
             'celery',
-            'coreapi',
-            'coreschema',
             'django',
             'djangorestframework',
+            'uritemplate',
         ]
     },
     install_requires=[
