@@ -7,7 +7,7 @@ all:
 
 lint:
 	flake8 src tests
-	isort -c -df -rc src tests
+	isort --check-only --diff src tests
 	black --check --diff src tests
 
 test:
