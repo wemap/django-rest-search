@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
-from django.conf.urls import url
+from django.urls import path
 
 from tests import views
 
 urlpatterns = [
-    url(r"^books$", views.BookCreate.as_view()),
-    url(r"^books/search$", views.BookSearch.as_view()),
-    url(r"^books/search_sorted$", views.BookSearchSorted.as_view()),
+    path("books", views.BookCreate.as_view()),
+    path("books/search", views.BookSearch.as_view()),
+    path("books/search_sorted", views.BookSearchSorted.as_view()),
 ]
