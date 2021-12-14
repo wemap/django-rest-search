@@ -32,13 +32,13 @@ class TasksTest(TestCase):
         mock_create.assert_called_once_with(
             index="book",
             body={
-                "mappings": {"Book": {"properties": {"tags": {"type": "keyword"}}}},
+                "mappings": {"properties": {"tags": {"type": "keyword"}}},
                 "settings": {
                     "analysis": {
                         "analyzer": {
                             "default": {
                                 "tokenizer": "standard",
-                                "filter": ["standard", "lowercase", "asciifolding"],
+                                "filter": ["lowercase", "asciifolding"],
                             }
                         }
                     }
@@ -72,7 +72,6 @@ class TasksTest(TestCase):
                     "_id": 1,
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
-                    "_type": "Book",
                 }
             ],
         )
@@ -84,7 +83,7 @@ class TasksTest(TestCase):
         patch_index({"Book": [2]})
         self.assertEqual(
             mock_bulk.side_effect.actions,
-            [{"_id": 2, "_index": "book", "_op_type": "delete", "_type": "Book"}],
+            [{"_id": 2, "_index": "book", "_op_type": "delete"}],
         )
 
     @patch("rest_search.tasks.bulk")
@@ -99,9 +98,8 @@ class TasksTest(TestCase):
                     "_id": 1,
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
-                    "_type": "Book",
                 },
-                {"_id": 2, "_index": "book", "_op_type": "delete", "_type": "Book"},
+                {"_id": 2, "_index": "book", "_op_type": "delete"},
             ],
         )
 
@@ -123,7 +121,6 @@ class TasksTest(TestCase):
                     "_id": 1,
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
-                    "_type": "Book",
                 }
             ],
         )
@@ -136,8 +133,8 @@ class TasksTest(TestCase):
 
         # books : 1 (still there), 1001 (gone)
         mock_scan.return_value = [
-            {"_id": "1", "_index": "book", "_score": 0.0, "_type": "Book"},
-            {"_id": "1001", "_index": "book", "_score": 0.0, "_type": "Book"},
+            {"_id": "1", "_index": "book", "_score": 0.0},
+            {"_id": "1001", "_index": "book", "_score": 0.0},
         ]
         update_index(remove=False)
         mock_create_index.assert_called_once_with()
@@ -149,7 +146,6 @@ class TasksTest(TestCase):
                     "_id": 1,
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
-                    "_type": "Book",
                 }
             ],
         )
@@ -162,8 +158,8 @@ class TasksTest(TestCase):
 
         # books : 1 (still there), 1001 (gone)
         mock_scan.return_value = [
-            {"_id": "1", "_index": "book", "_score": 0.0, "_type": "Book"},
-            {"_id": "1001", "_index": "book", "_score": 0.0, "_type": "Book"},
+            {"_id": "1", "_index": "book", "_score": 0.0},
+            {"_id": "1001", "_index": "book", "_score": 0.0},
         ]
         update_index()
         mock_create_index.assert_called_once_with()
@@ -175,8 +171,7 @@ class TasksTest(TestCase):
                     "_id": 1,
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
-                    "_type": "Book",
                 },
-                {"_id": 1001, "_index": "book", "_op_type": "delete", "_type": "Book"},
+                {"_id": 1001, "_index": "book", "_op_type": "delete"},
             ],
         )

@@ -65,7 +65,7 @@ def _create_index(indexer):
         ),
     }
     if indexer.mappings is not None:
-        body["mappings"][indexer.doc_type] = indexer.mappings
+        body["mappings"] = indexer.mappings
 
     es = get_elasticsearch(indexer)
     if not es.indices.exists(indexer.index):
@@ -79,7 +79,6 @@ def _delete_items(indexer, pks):
     def mapper(pk):
         return {
             "_index": indexer.index,
-            "_type": indexer.doc_type,
             "_id": pk,
             "_op_type": "delete",
         }
@@ -100,7 +99,6 @@ def _index_items(indexer, pks):
                 seen_pks.add(item["id"])
                 yield {
                     "_index": indexer.index,
-                    "_type": indexer.doc_type,
                     "_id": item["id"],
                     "_source": item,
                 }

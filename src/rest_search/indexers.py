@@ -32,11 +32,11 @@ class Indexer(object):
 
     def scan(self, **kwargs):
         es = get_elasticsearch(self)
-        return scan(es, index=self.index, doc_type=self.doc_type, **kwargs)
+        return scan(es, index=self.index, **kwargs)
 
     def search(self, **kwargs):
         es = get_elasticsearch(self)
-        return es.search(index=self.index, doc_type=self.doc_type, **kwargs)
+        return es.search(index=self.index, **kwargs)
 
 
 def _get_registered():
