@@ -49,6 +49,6 @@ setup(
     },
     install_requires=[
         "aws-requests-auth>=0.3.0",
-        "elasticsearch>=6.0.0,<8.0.0",
+        "elasticsearch>=7.0.0,<8.0.0",
     ],
 )
