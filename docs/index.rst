@@ -51,7 +51,6 @@ If you wish, you can customise the settings used when creating an index.
                'default': {
                    'tokenizer': 'standard',
                    'filter': [
-                       'standard',
                        'lowercase',
                        'asciifolding',
                    ]
