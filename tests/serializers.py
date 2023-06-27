@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from tests.models import Author, Book
+from tests.models import Author, Book, Unsupported
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -17,3 +17,9 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ("id", "tags", "title")
+
+
+class UnsupportedSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Unsupported
+        field = ("url",)

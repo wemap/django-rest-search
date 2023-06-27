@@ -2,7 +2,7 @@
 
 from rest_search import indexers
 from tests.models import Author, Book
-from tests.serializers import AuthorSerializer, BookSerializer
+from tests.serializers import AuthorSerializer, BookSerializer, UnsupportedSerializer
 
 
 class AuthorIndexer(indexers.Indexer):
@@ -19,6 +19,10 @@ class BookIndexer(indexers.Indexer):
 
     def get_queryset(self):
         return Book.objects.prefetch_related("tags")
+
+
+class UnsupportedIndexer(indexers.Indexer):
+    serializer_class = UnsupportedSerializer
 
 
 indexers.register(AuthorIndexer)

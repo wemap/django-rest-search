@@ -33,8 +33,10 @@ class Indexer(object):
         # a primary key value.
         if isinstance(primary_key, models.UUIDField):
             self.pk_from_string = uuid.UUID
-        else:
+        elif isinstance(primary_key, (models.AutoField, models.BigAutoField)):
             self.pk_from_string = int
+        else:
+            raise AssertionError("Unhandled primary key type %s" % type(primary_key))
 
     def map_results(self, results):
         """

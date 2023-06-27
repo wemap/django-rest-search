@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 from django.test import TestCase
 
-from tests.indexers import BookIndexer
+from tests.indexers import BookIndexer, UnsupportedIndexer
 from tests.models import Book, Tag
 
 
@@ -68,3 +68,11 @@ class IndexersTest(TestCase):
 
         indexer = BookIndexer()
         indexer.search(body={"query": {"match_all": {}}})
+
+    def test_unsupported_primary_key(self):
+        with self.assertRaises(AssertionError) as cm:
+            UnsupportedIndexer()
+        self.assertEqual(
+            str(cm.exception),
+            "Unhandled primary key type <class 'django.db.models.fields.URLField'>",
+        )
