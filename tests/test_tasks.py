@@ -23,8 +23,8 @@ class TasksTest(TestCase):
 
     def create_authors(self):
         Author.objects.create(
-            id=uuid.UUID("4996decc-c8f0-4492-800a-023ee7aaeec5"),
             name="Some author",
+            unique_id=uuid.UUID("4996decc-c8f0-4492-800a-023ee7aaeec5"),
         )
 
     def create_books(self):
@@ -120,8 +120,8 @@ class TasksTest(TestCase):
 
         patch_index(
             {
-                "Author": [uuid.UUID("4996decc-c8f0-4492-800a-023ee7aaeec5")],
-                "Book": [1],
+                "Author": ["4996decc-c8f0-4492-800a-023ee7aaeec5"],
+                "Book": ["1"],
             }
         )
 
@@ -132,12 +132,12 @@ class TasksTest(TestCase):
                     "_id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                     "_index": "author",
                     "_source": {
-                        "id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                         "name": "Some author",
+                        "unique_id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                     },
                 },
                 {
-                    "_id": 1,
+                    "_id": "1",
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
                 },
@@ -151,10 +151,10 @@ class TasksTest(TestCase):
 
         mock_bulk.side_effect = MockBulk()
 
-        patch_index({"Book": [2]})
+        patch_index({"Book": ["2"]})
         self.assertEqual(
             mock_bulk.side_effect.actions,
-            [{"_id": 2, "_index": "book", "_op_type": "delete"}],
+            [{"_id": "2", "_index": "book", "_op_type": "delete"}],
         )
 
     @patch("rest_search.tasks.bulk")
@@ -164,17 +164,17 @@ class TasksTest(TestCase):
 
         mock_bulk.side_effect = MockBulk()
 
-        patch_index({"Book": [1, 2]})
+        patch_index({"Book": ["1", "2"]})
 
         self.assertEqual(
             mock_bulk.side_effect.actions,
             [
                 {
-                    "_id": 1,
+                    "_id": "1",
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
                 },
-                {"_id": 2, "_index": "book", "_op_type": "delete"},
+                {"_id": "2", "_index": "book", "_op_type": "delete"},
             ],
         )
 
@@ -197,7 +197,7 @@ class TasksTest(TestCase):
             mock_bulk.side_effect.actions,
             [
                 {
-                    "_id": 1,
+                    "_id": "1",
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
                 }
@@ -228,7 +228,7 @@ class TasksTest(TestCase):
             mock_bulk.side_effect.actions,
             [
                 {
-                    "_id": 1,
+                    "_id": "1",
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
                 }
@@ -249,16 +249,16 @@ class TasksTest(TestCase):
                         "_id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                         "_index": "author",
                         "_source": {
-                            "id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                             "name": "Some author",
+                            "unique_id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                         },
                     },  # still in DB
                     {
                         "_id": "8550d60b-a3a7-4f07-8587-0b1a05a97e65",
                         "_index": "author",
                         "_source": {
-                            "id": "8550d60b-a3a7-4f07-8587-0b1a05a97e65",
                             "name": "Some author",
+                            "unique_id": "8550d60b-a3a7-4f07-8587-0b1a05a97e65",
                         },
                     },  # gone from DB
                 ],
@@ -276,8 +276,8 @@ class TasksTest(TestCase):
                     "_id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                     "_index": "author",
                     "_source": {
-                        "id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                         "name": "Some author",
+                        "unique_id": "4996decc-c8f0-4492-800a-023ee7aaeec5",
                     },
                 },
                 {
@@ -312,10 +312,10 @@ class TasksTest(TestCase):
             mock_bulk.side_effect.actions,
             [
                 {
-                    "_id": 1,
+                    "_id": "1",
                     "_index": "book",
                     "_source": {"id": 1, "tags": ["foo", "bar"], "title": "Some book"},
                 },
-                {"_id": 1001, "_index": "book", "_op_type": "delete"},
+                {"_id": "1001", "_index": "book", "_op_type": "delete"},
             ],
         )

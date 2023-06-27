@@ -33,15 +33,19 @@ def delete_index():
 def patch_index(updates):
     """
     Performs a partial update of the ElasticSearch indices.
+
+    Primary keys are received as strings.
     """
     updates_str = ["%s: %d items" % (k, len(v)) for k, v in updates.items()]
     logger.info("Patching indices (%s)" % ", ".join(updates_str))
 
     indexers = _get_registered()
-    for doc_type, pks in updates.items():
+    for doc_type, pk_strs in updates.items():
         for indexer in indexers:
             if indexer.doc_type == doc_type:
-                _patch_index(indexer, pks)
+                _patch_index(
+                    indexer, [indexer.pk_from_string(pk_str) for pk_str in pk_strs]
+                )
 
 
 @shared_task
@@ -79,7 +83,7 @@ def _delete_items(indexer, pks):
     def mapper(pk):
         return {
             "_index": indexer.index,
-            "_id": pk,
+            "_id": str(pk),
             "_op_type": "delete",
         }
 
@@ -87,6 +91,9 @@ def _delete_items(indexer, pks):
 
 
 def _index_items(indexer, pks):
+    """
+    Primary keys are manipulated in their native type (int, UUID).
+    """
     es = get_elasticsearch(indexer)
     seen_pks = set()
 
@@ -96,10 +103,12 @@ def _index_items(indexer, pks):
             qs = indexer.get_queryset().filter(pk__in=chunk)
             data = indexer.serializer_class(qs, many=True).data
             for item in data:
-                seen_pks.add(item["id"])
+                pk_str = str(item[indexer.pk_name])
+                pk = indexer.pk_from_string(pk_str)
+                seen_pks.add(pk)
                 yield {
                     "_index": indexer.index,
-                    "_id": item["id"],
+                    "_id": pk_str,
                     "_source": item,
                 }
 
@@ -108,6 +117,9 @@ def _index_items(indexer, pks):
 
 
 def _patch_index(indexer, pks):
+    """
+    Primary keys are manipulated in their native type (int, UUID).
+    """
     # index current items
     seen_pks = _index_items(indexer, pks)
 
@@ -117,8 +129,11 @@ def _patch_index(indexer, pks):
 
 
 def _update_index(indexer, remove):
+    """
+    Primary keys are manipulated in their native type (int, UUID).
+    """
     scan = indexer.scan(query={"stored_fields": []})
-    old_pks = set([int(i["_id"]) for i in scan])
+    old_pks = set([indexer.pk_from_string(i["_id"]) for i in scan])
 
     # index current items
     seen_pks = _index_items(
