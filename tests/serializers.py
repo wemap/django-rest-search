@@ -2,7 +2,13 @@
 
 from rest_framework import serializers
 
-from tests.models import Book
+from tests.models import Author, Book
+
+
+class AuthorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Author
+        fields = ("id", "name")
 
 
 class BookSerializer(serializers.ModelSerializer):
