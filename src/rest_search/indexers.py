@@ -22,9 +22,7 @@ class Indexer(object):
             self.index = model.__name__.lower()
 
         # Find the model's primary key.
-        primary_key = next(
-            field for field in model._meta.get_fields() if field.primary_key
-        )
+        primary_key = model._meta.pk
 
         # Make a note of the field name.
         self.pk_name = primary_key.name
