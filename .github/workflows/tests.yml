@@ -11,7 +11,7 @@ jobs:
       with:
         python-version: 3.9
     - name: Install packages
-      run: pip install -e .[dev] black flake8 isort
+      run: pip install -e .[dev]
     - name: Run linters
       run: make lint
 
@@ -30,7 +30,7 @@ jobs:
       with:
         python-version: ${{ matrix.python }}
     - name: Install packages
-      run: pip install -e .[dev] coverage
+      run: pip install -e .[dev]
     - name: Run test suite
       run: make test
     - name: Upload coverage report

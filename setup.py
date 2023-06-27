@@ -40,9 +40,13 @@ setup(
     ],
     extras_require={
         'dev': [
+            'black',
             'celery',
+            'coverage',
             'django',
             'djangorestframework',
+            'flake8',
+            'isort',
             'uritemplate',
         ]
     },
