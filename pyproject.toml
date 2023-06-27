@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "djangorestsearch"
+description = "ElasticSearch integration for Django"
+readme = "README.rst"
+requires-python = ">=3.7"
+license = { text = "BSD" }
+authors = [
+    { name = "Jeremy Lainé", email = "jeremy.laine@m4x.org" },
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
+dependencies = [
+    "aws-requests-auth>=0.3.0",
+    "elasticsearch>=7.0.0,<8.0.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "celery",
+    "coverage",
+    "django",
+    "djangorestframework",
+    "flake8",
+    "isort",
+    "uritemplate",
+]
+
+[project.urls]
+Homepage = "https://github.com/wemap/django-rest-search"
+Documentation = "https://django-rest-search.readthedocs.io/"
+
+[tool.setuptools.dynamic]
+version = {attr = "rest_search.__version__"}

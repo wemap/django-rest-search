@@ -1,7 +1,0 @@
-__author__ = "Jeremy Lainé"
-__email__ = "jeremy@getwemap.com"
-__license__ = "BSD"
-__summary__ = "ElasticSearch integration for Django."
-__title__ = "djangorestsearch"
-__uri__ = "https://github.com/wemap/django-rest-search"
-__version__ = "0.11.0"
