@@ -45,7 +45,9 @@ jobs:
         with:
           python-version: 3.9
       - name: Build source package
-        run: python setup.py sdist
+        run: |
+          pip install -U build
+          python -m build --sdist
       - name: Publish to PyPI
         if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/')
         uses: pypa/gh-action-pypi-publish@master
