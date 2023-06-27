@@ -24,3 +24,11 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.slug
+
+
+class Unsupported(models.Model):
+    """
+    This model's primary key is a `URLField` which is unsupported.
+    """
+
+    url = models.URLField(primary_key=True)
