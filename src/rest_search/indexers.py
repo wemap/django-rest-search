@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 
+import uuid
+
+from django.db import models
 from django.db.models.signals import post_delete, post_save
 from elasticsearch.helpers import scan
 
@@ -13,9 +16,25 @@ class Indexer(object):
     private_properties = []
 
     def __init__(self):
-        self.doc_type = self.serializer_class.Meta.model.__name__
+        model = self.serializer_class.Meta.model
+        self.doc_type = model.__name__
         if not hasattr(self, "index"):
-            self.index = self.serializer_class.Meta.model.__name__.lower()
+            self.index = model.__name__.lower()
+
+        # Find the model's primary key.
+        primary_key = next(
+            field for field in model._meta.get_fields() if field.primary_key
+        )
+
+        # Make a note of the field name.
+        self.pk_name = primary_key.name
+
+        # Determine how an `_id` from ElasticSearch is parsed to
+        # a primary key value.
+        if isinstance(primary_key, models.UUIDField):
+            self.pk_from_string = uuid.UUID
+        else:
+            self.pk_from_string = int
 
     def map_results(self, results):
         """

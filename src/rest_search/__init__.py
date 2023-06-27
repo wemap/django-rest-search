@@ -88,10 +88,12 @@ def queue_flush():
     if QUEUES:
         from rest_search.tasks import patch_index
 
-        # convert sets to lists, otherwise they are not JSON-serializable
+        # Convert sets to lists, otherwise they are not JSON-serializable.
+        #
+        # All the primary keys are cast to `str`.
         args = {}
         for doc_type, pks in QUEUES.items():
-            args[doc_type] = list(pks)
+            args[doc_type] = [str(pk) for pk in pks]
         patch_index.delay(args)
         QUEUES.clear()
 
