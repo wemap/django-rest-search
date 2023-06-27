@@ -48,7 +48,6 @@ class ConnectionHandler(object):
             and "AWS_SECRET_KEY" in config
             and "AWS_REGION" in config
         ):
-
             kwargs["connection_class"] = RequestsHttpConnection
             kwargs["http_auth"] = AWSRequestsAuth(
                 aws_access_key=config["AWS_ACCESS_KEY"],
