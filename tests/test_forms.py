@@ -30,7 +30,7 @@ class FormsTest(TestCase):
             {
                 "bool": {
                     "must": [
-                        {"simple_query_string": {"fields": ["name"], "query": u"foo"}}
+                        {"simple_query_string": {"fields": ["name"], "query": "foo"}}
                     ]
                 }
             },
@@ -57,7 +57,7 @@ class FormsTest(TestCase):
                 "bool": {
                     "filter": [{"term": {"tags": "tag1"}}, {"term": {"tags": "tag2"}}],
                     "must": [
-                        {"simple_query_string": {"fields": ["name"], "query": u"foo"}}
+                        {"simple_query_string": {"fields": ["name"], "query": "foo"}}
                     ],
                 }
             },
