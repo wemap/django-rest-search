@@ -84,7 +84,7 @@ class ViewsTest(TestCase):
             {
                 "count": 1,
                 "next": None,
-                "previous": "http://testserver/books/search" "?limit=10&title=New+book",
+                "previous": "http://testserver/books/search?limit=10&title=New+book",
                 "results": [],
             },
         )
