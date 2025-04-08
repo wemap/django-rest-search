@@ -36,6 +36,7 @@ dev = [
     "coverage",
     "django",
     "djangorestframework",
+    "inflection",
     "ruff",
     "uritemplate",
 ]
