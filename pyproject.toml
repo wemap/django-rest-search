@@ -32,13 +32,11 @@ dynamic = ["version"]
 
 [project.optional-dependencies]
 dev = [
-    "black",
     "celery",
     "coverage",
     "django",
     "djangorestframework",
-    "flake8",
-    "isort",
+    "ruff",
     "uritemplate",
 ]
 
