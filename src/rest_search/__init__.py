@@ -4,7 +4,7 @@ from threading import local
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
 from django.conf import settings
-from elasticsearch import Elasticsearch, RequestsHttpConnection
+from opensearchpy import OpenSearch, RequestsHttpConnection
 
 __version__ = "0.12.0"
 
@@ -57,10 +57,10 @@ class ConnectionHandler(object):
                 aws_service="es",
             )
 
-        return Elasticsearch(**kwargs)
+        return OpenSearch(**kwargs)
 
 
-def get_elasticsearch(indexer):
+def get_opensearch(indexer):
     return connections["default"]
 
 

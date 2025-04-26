@@ -21,25 +21,25 @@ class ConnectionTest(TestCase):
             }
         }
     )
-    @patch("rest_search.Elasticsearch")
-    def test_aws_auth(self, mock_elasticsearch):
+    @patch("rest_search.OpenSearch")
+    def test_aws_auth(self, mock_opensearch):
         es = connections["default"]
         self.assertIsNotNone(es)
 
-        self.assertEqual(mock_elasticsearch.call_count, 1)
-        self.assertEqual(mock_elasticsearch.call_args[0], ())
+        self.assertEqual(mock_opensearch.call_count, 1)
+        self.assertEqual(mock_opensearch.call_args[0], ())
         self.assertEqual(
-            sorted(mock_elasticsearch.call_args[1].keys()),
+            sorted(mock_opensearch.call_args[1].keys()),
             ["connection_class", "host", "http_auth", "port", "use_ssl"],
         )
 
-    @patch("rest_search.Elasticsearch")
-    def test_no_auth(self, mock_elasticsearch):
+    @patch("rest_search.OpenSearch")
+    def test_no_auth(self, mock_opensearch):
         es = connections["default"]
         self.assertIsNotNone(es)
 
-        self.assertEqual(mock_elasticsearch.call_count, 1)
-        self.assertEqual(mock_elasticsearch.call_args[0], ())
+        self.assertEqual(mock_opensearch.call_count, 1)
+        self.assertEqual(mock_opensearch.call_args[0], ())
         self.assertEqual(
-            sorted(mock_elasticsearch.call_args[1].keys()), ["host", "port", "use_ssl"]
+            sorted(mock_opensearch.call_args[1].keys()), ["host", "port", "use_ssl"]
         )

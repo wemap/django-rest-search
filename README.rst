@@ -16,7 +16,7 @@ Django REST Search
     :target: https://pypi.python.org/pypi/djangorestsearch
 
 Django REST Search provides a set of classes to facilitate the integration of
-ElasticSearch into applications powered by the Django REST Framework.
+OpenSearch into applications powered by the Django REST Framework.
 
 Full documentation for the project is available at
 http://django-rest-search.readthedocs.io/.
