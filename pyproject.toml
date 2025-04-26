@@ -45,5 +45,8 @@ dev = [
 Homepage = "https://github.com/wemap/django-rest-search"
 Documentation = "https://django-rest-search.readthedocs.io/"
 
+[tool.coverage.run]
+source = ["rest_search"]
+
 [tool.setuptools.dynamic]
 version = {attr = "rest_search.__version__"}
