@@ -33,7 +33,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 dev = [
     "celery",
-    "coverage",
+    "coverage[toml]>=7.2.2",
     "django",
     "djangorestframework",
     "inflection",
@@ -44,6 +44,9 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/wemap/django-rest-search"
 Documentation = "https://django-rest-search.readthedocs.io/"
+
+[tool.coverage.run]
+source = ["rest_search"]
 
 [tool.setuptools.dynamic]
 version = {attr = "rest_search.__version__"}
