@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from tests.models import Author, Book, Unsupported
+from tests.models import Author, Book, Tag, Unsupported
 
 
 class AuthorSerializer(serializers.ModelSerializer):
@@ -12,7 +12,9 @@ class AuthorSerializer(serializers.ModelSerializer):
 
 
 class BookSerializer(serializers.ModelSerializer):
-    tags = serializers.StringRelatedField(many=True)
+    tags = serializers.SlugRelatedField(
+        many=True, queryset=Tag.objects.all(), slug_field="slug"
+    )
 
     class Meta:
         model = Book

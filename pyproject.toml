@@ -47,5 +47,14 @@ Documentation = "https://django-rest-search.readthedocs.io/"
 [tool.coverage.run]
 source = ["rest_search"]
 
+[tool.ruff.lint]
+select = [
+    "E",  # pycodestyle
+    "F",  # Pyflakes
+    "W",  # pycodestyle
+    "I",  # isort
+    "T20",  # flake8-print
+]
+
 [tool.setuptools.dynamic]
 version = {attr = "rest_search.__version__"}
