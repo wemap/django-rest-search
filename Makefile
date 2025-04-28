@@ -11,6 +11,6 @@ lint:
 
 test:
 	coverage erase
-	coverage run `which django-admin` test
+	coverage run `which django-admin` test -v 1
 	coverage report
 	coverage xml

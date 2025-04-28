@@ -7,7 +7,7 @@ from rest_search import queue_flush
 
 def flush_updates(function):
     """
-    Decorator that flushes ElasticSearch updates.
+    Decorator that flushes OpenSearch updates.
     """
 
     @functools.wraps(function)

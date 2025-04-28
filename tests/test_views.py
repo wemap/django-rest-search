@@ -11,7 +11,7 @@ class ViewsTest(TestCase):
         response = self.client.post("/books", {"title": "New book"})
         self.assertEqual(response.status_code, 201)
 
-    @patch("elasticsearch.client.Elasticsearch.search")
+    @patch("opensearchpy.client.OpenSearch.search")
     def test_search(self, mock_search):
         mock_search.return_value = {
             "_shards": {"failed": 0, "successful": 5, "total": 5},
@@ -62,7 +62,7 @@ class ViewsTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.data, {"id": ["Enter a whole number."]})
 
-    @patch("elasticsearch.client.Elasticsearch.search")
+    @patch("opensearchpy.client.OpenSearch.search")
     def test_search_pagination(self, mock_search):
         mock_search.return_value = {
             "_shards": {"failed": 0, "successful": 5, "total": 5},
@@ -99,7 +99,7 @@ class ViewsTest(TestCase):
             index="book",
         )
 
-    @patch("elasticsearch.client.Elasticsearch.search")
+    @patch("opensearchpy.client.OpenSearch.search")
     def test_search_sorted(self, mock_search):
         mock_search.return_value = {
             "_shards": {"failed": 0, "successful": 5, "total": 5},

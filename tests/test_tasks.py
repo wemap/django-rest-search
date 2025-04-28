@@ -31,8 +31,8 @@ class TasksTest(TestCase):
         book = Book.objects.create(id=1, title="Some book")
         book.tags.set([Tag.objects.create(slug=slug) for slug in ["foo", "bar"]])
 
-    @patch("elasticsearch.client.indices.IndicesClient.exists")
-    @patch("elasticsearch.client.indices.IndicesClient.create")
+    @patch("opensearchpy.client.indices.IndicesClient.exists")
+    @patch("opensearchpy.client.indices.IndicesClient.create")
     def test_create_index(self, mock_create, mock_exists):
         mock_exists.return_value = False
 
@@ -83,8 +83,8 @@ class TasksTest(TestCase):
             ],
         )
 
-    @patch("elasticsearch.client.indices.IndicesClient.exists")
-    @patch("elasticsearch.client.indices.IndicesClient.create")
+    @patch("opensearchpy.client.indices.IndicesClient.exists")
+    @patch("opensearchpy.client.indices.IndicesClient.create")
     def test_create_index_exists(self, mock_create, mock_exists):
         mock_exists.return_value = True
 
@@ -99,7 +99,7 @@ class TasksTest(TestCase):
         )
         mock_create.assert_not_called()
 
-    @patch("elasticsearch.client.indices.IndicesClient.delete")
+    @patch("opensearchpy.client.indices.IndicesClient.delete")
     def test_delete_index(self, mock_delete):
         delete_index()
 

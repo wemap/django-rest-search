@@ -57,7 +57,7 @@ class IndexersTest(TestCase):
         indexer = BookIndexer()
         indexer.scan(body={"query": {"match_all": {}}})
 
-    @patch("elasticsearch.client.Elasticsearch.search")
+    @patch("opensearchpy.client.OpenSearch.search")
     def test_search(self, mock_search):
         mock_search.return_value = {
             "_shards": {"failed": 0, "successful": 5, "total": 5},

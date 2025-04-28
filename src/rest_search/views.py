@@ -39,7 +39,7 @@ class SearchAPIView(APIView):
         if sort:
             body["sort"] = sort
 
-        # execute elasticsearch query
+        # execute opensearch query
         indexer = self.get_indexer()
         res = indexer.search(body=body)
 
@@ -53,7 +53,7 @@ class SearchAPIView(APIView):
 
     def get_query(self):
         """
-        Returns the 'query' element of the ElasticSearch request body.
+        Returns the 'query' element of the OpenSearch request body.
         """
         form = self.form_class(self.request.GET, context={"request": self.request})
         if not form.is_valid():

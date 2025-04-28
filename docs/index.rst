@@ -2,7 +2,7 @@ Django REST Search
 ==================
 
 Django REST Search provides a set of classes to facilitate the integration of
-ElasticSearch [1]_ into applications powered by the Django REST Framework [2]_.
+OpenSearch [1]_ into applications powered by the Django REST Framework [2]_.
 
 Installation
 ------------
@@ -22,7 +22,7 @@ Add `'rest_search'` to your `INSTALLED_APPS` setting.
         'rest_search',
     ]
 
-Add the middleware to flush ElasticSearch updates to a celery task.
+Add the middleware to flush OpenSearch updates to a celery task.
 
 .. code-block:: python
 
@@ -31,7 +31,7 @@ Add the middleware to flush ElasticSearch updates to a celery task.
         'rest_search.middleware.FlushUpdatesMiddleware',
     ]
 
-Configure your ElasticSearch connection.
+Configure your OpenSearch connection.
 
 .. code-block:: python
 
@@ -68,6 +68,6 @@ Contents
    indexers
    tasks
 
-.. [1] https://www.elastic.co/products/elasticsearch
+.. [1] https://opensearch.org/
 
 .. [2] http://www.django-rest-framework.org/
