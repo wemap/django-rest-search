@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 from django.test import TestCase, override_settings
 
@@ -23,6 +23,34 @@ class ConnectionTest(TestCase):
     )
     @patch("rest_search.Elasticsearch")
     def test_aws_auth(self, mock_elasticsearch):
+        es = connections["default"]
+        self.assertIsNotNone(es)
+
+        self.assertEqual(mock_elasticsearch.call_count, 1)
+        self.assertEqual(mock_elasticsearch.call_args[0], ())
+        self.assertEqual(
+            sorted(mock_elasticsearch.call_args[1].keys()),
+            ["connection_class", "host", "http_auth", "port", "use_ssl"],
+        )
+
+    @override_settings(
+        REST_SEARCH_CONNECTIONS={
+            "default": {
+                "AWS_REGION": "some-region",
+                "HOST": "es.example.com",
+            }
+        }
+    )
+    @patch("rest_search.Elasticsearch")
+    @patch("rest_search.Session")
+    def test_aws_role_auth(self, mock_session, mock_elasticsearch):
+        mock_creds = Mock(
+            access_key="mock-access-key",
+            secret_key="mock-secret-key",
+            token="mock-token",
+        )
+        mock_session.return_value.get_credentials.return_value.get_frozen_credentials.return_value = mock_creds
+
         es = connections["default"]
         self.assertIsNotNone(es)
 

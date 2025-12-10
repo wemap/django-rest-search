@@ -3,6 +3,7 @@
 from threading import local
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
+from botocore.session import Session
 from django.conf import settings
 from elasticsearch import Elasticsearch, RequestsHttpConnection
 
@@ -52,6 +53,19 @@ class ConnectionHandler(object):
             kwargs["http_auth"] = AWSRequestsAuth(
                 aws_access_key=config["AWS_ACCESS_KEY"],
                 aws_secret_access_key=config["AWS_SECRET_KEY"],
+                aws_host=config["HOST"],
+                aws_region=config["AWS_REGION"],
+                aws_service="es",
+            )
+        elif "AWS_REGION" in config:
+            session = Session()
+            creds = session.get_credentials().get_frozen_credentials()
+
+            kwargs["connection_class"] = RequestsHttpConnection
+            kwargs["http_auth"] = AWSRequestsAuth(
+                aws_access_key=creds.access_key,
+                aws_secret_access_key=creds.secret_key,
+                aws_token=creds.token,
                 aws_host=config["HOST"],
                 aws_region=config["AWS_REGION"],
                 aws_service="es",
