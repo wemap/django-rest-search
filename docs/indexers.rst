@@ -2,11 +2,11 @@ Indexers
 ========
 
 Indexers provide the binding between the data in the ORM and the data which
-is indexed in ElasticSearch.
+is indexed in OpenSearch.
 
 To perform data serialization, indexers build upon the REST framework's
 serializers, which allow great flexibility in how you map the data in the ORM
-and the JSON representation which is sent to ElasticSearch.
+and the JSON representation which is sent to OpenSearch.
 
 Declaring indexers
 ------------------
@@ -45,13 +45,13 @@ Options
 
 When declaring an indexer, you can specify some additional properties:
 
-- `index`: the name of the ElasticSearch index, defaults to the model name in lowercase
+- `index`: the name of the OpenSearch index, defaults to the model name in lowercase
 
 Index updates
 -------------
 
 When you register an indexer, it will install signal handlers for save and
-delete events and queue updates to the ElasticSearch index.
+delete events and queue updates to the OpenSearch index.
 
 For these updates to actually be performed, either install the
 ```rest_search.middleware.FlushUpdatesMiddleware``` middleware or wrap your

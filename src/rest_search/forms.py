@@ -5,12 +5,12 @@ from django import forms
 
 class SearchMixin(object):
     """
-    Mixin to help build ElasticSearch queries.
+    Mixin to help build OpenSearch queries.
     """
 
     def get_query(self):
         """
-        Returns the query to be executed by ElasticSearch.
+        Returns the query to be executed by OpenSearch.
         """
         return self._score_query(self._build_query())
 
@@ -45,7 +45,7 @@ class SearchMixin(object):
 
 class SearchForm(SearchMixin, forms.Form):
     """
-    Base form for building ElasticSearch queries.
+    Base form for building OpenSearch queries.
     """
 
     def __init__(self, data, context={}):

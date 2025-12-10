@@ -4,9 +4,9 @@ import uuid
 
 from django.db import models
 from django.db.models.signals import post_delete, post_save
-from elasticsearch.helpers import scan
+from opensearchpy.helpers import scan
 
-from rest_search import get_elasticsearch
+from rest_search import get_opensearch
 
 _REGISTERED_CLASSES = []
 
@@ -27,7 +27,7 @@ class Indexer(object):
         # Make a note of the field name.
         self.pk_name = primary_key.name
 
-        # Determine how an `_id` from ElasticSearch is parsed to
+        # Determine how an `_id` from OpenSearch is parsed to
         # a primary key value.
         if isinstance(primary_key, models.UUIDField):
             self.pk_from_string = uuid.UUID
@@ -50,11 +50,11 @@ class Indexer(object):
         return map(map_result_item, results)
 
     def scan(self, **kwargs):
-        es = get_elasticsearch(self)
+        es = get_opensearch(self)
         return scan(es, index=self.index, **kwargs)
 
     def search(self, **kwargs):
-        es = get_elasticsearch(self)
+        es = get_opensearch(self)
         return es.search(index=self.index, **kwargs)
 
 
@@ -67,7 +67,7 @@ def _get_registered():
 
 def _instance_changed(sender, instance, **kwargs):
     """
-    Queues an update to the ElasticSearch index.
+    Queues an update to the OpenSearch index.
     """
     from rest_search import queue_add
 
