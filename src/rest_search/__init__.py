@@ -7,7 +7,7 @@ from botocore.session import Session
 from django.conf import settings
 from opensearchpy import OpenSearch, RequestsHttpConnection
 
-__version__ = "0.14.0"
+__version__ = "0.14.1"
 
 DEFAULT_INDEX_SETTINGS = {
     "analysis": {

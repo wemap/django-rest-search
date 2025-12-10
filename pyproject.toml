@@ -25,7 +25,7 @@ classifiers = [
 ]
 dependencies = [
     "aws-requests-auth>=0.3.0",
-    "botocore>=1.42.6",
+    "botocore",
     "opensearch-py>=2.0.0,<3.0.0",
 ]
 dynamic = ["version"]
