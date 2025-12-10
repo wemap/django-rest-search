@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "djangorestsearch"
-description = "ElasticSearch integration for Django"
+description = "OpenSearch integration for Django"
 readme = "README.rst"
 requires-python = ">=3.9"
 license = "BSD-2-Clause"
@@ -26,7 +26,7 @@ classifiers = [
 dependencies = [
     "aws-requests-auth>=0.3.0",
     "botocore>=1.42.6",
-    "elasticsearch>=7.0.0,<8.0.0",
+    "opensearch-py>=2.0.0,<3.0.0",
 ]
 dynamic = ["version"]
 

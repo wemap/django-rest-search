@@ -7,7 +7,7 @@ from rest_search import queue_flush
 
 class FlushUpdatesMiddleware(MiddlewareMixin):
     """
-    Middleware that flushes ElasticSearch updates.
+    Middleware that flushes OpenSearch updates.
     """
 
     def process_response(self, request, response):

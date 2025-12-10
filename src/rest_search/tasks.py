@@ -4,9 +4,9 @@ import logging
 
 from celery import shared_task
 from django.conf import settings
-from elasticsearch.helpers import bulk
+from opensearchpy.helpers import bulk
 
-from rest_search import DEFAULT_INDEX_SETTINGS, get_elasticsearch
+from rest_search import DEFAULT_INDEX_SETTINGS, get_opensearch
 from rest_search.indexers import _get_registered
 
 logger = logging.getLogger("rest_search")
@@ -14,7 +14,7 @@ logger = logging.getLogger("rest_search")
 
 def create_index():
     """
-    Creates the ElasticSearch indices if they do not exist.
+    Creates the OpenSearch indices if they do not exist.
     """
     for indexer in _get_registered():
         _create_index(indexer)
@@ -22,17 +22,17 @@ def create_index():
 
 def delete_index():
     """
-    Deletes the ElasticSearch indices.
+    Deletes the OpenSearch indices.
     """
     for indexer in _get_registered():
-        es = get_elasticsearch(indexer)
+        es = get_opensearch(indexer)
         es.indices.delete(index=indexer.index, ignore=404)
 
 
 @shared_task
 def patch_index(updates):
     """
-    Performs a partial update of the ElasticSearch indices.
+    Performs a partial update of the OpenSearch indices.
 
     Primary keys are received as strings.
     """
@@ -51,7 +51,7 @@ def patch_index(updates):
 @shared_task
 def update_index(remove=True):
     """
-    Performs a full update of the ElasticSearch indices.
+    Performs a full update of the OpenSearch indices.
     """
     logger.info("Updating indices")
 
@@ -71,14 +71,14 @@ def _create_index(indexer):
     if indexer.mappings is not None:
         body["mappings"] = indexer.mappings
 
-    es = get_elasticsearch(indexer)
+    es = get_opensearch(indexer)
     if not es.indices.exists(indexer.index):
         logger.info("Creating index %s" % indexer.index)
         es.indices.create(index=indexer.index, body=body)
 
 
 def _delete_items(indexer, pks):
-    es = get_elasticsearch(indexer)
+    es = get_opensearch(indexer)
 
     def mapper(pk):
         return {
@@ -94,7 +94,7 @@ def _index_items(indexer, pks):
     """
     Primary keys are manipulated in their native type (int, UUID).
     """
-    es = get_elasticsearch(indexer)
+    es = get_opensearch(indexer)
     seen_pks = set()
 
     def bulk_mapper(block_size=1000):
