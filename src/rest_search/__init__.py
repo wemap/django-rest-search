@@ -7,7 +7,7 @@ from aws_requests_auth.boto_utils import BotoAWSRequestsAuth
 from django.conf import settings
 from opensearchpy import OpenSearch, RequestsHttpConnection
 
-__version__ = "0.14.1"
+__version__ = "0.15.0"
 
 DEFAULT_INDEX_SETTINGS = {
     "analysis": {
