@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 from django.test import TestCase, override_settings
 
@@ -42,15 +42,7 @@ class ConnectionTest(TestCase):
         }
     )
     @patch("rest_search.OpenSearch")
-    @patch("rest_search.Session")
-    def test_aws_role_auth(self, mock_session, mock_opensearch):
-        mock_creds = Mock(
-            access_key="mock-access-key",
-            secret_key="mock-secret-key",
-            token="mock-token",
-        )
-        mock_session.return_value.get_credentials.return_value.get_frozen_credentials.return_value = mock_creds
-
+    def test_aws_role_auth(self, mock_opensearch):
         es = connections["default"]
         self.assertIsNotNone(es)
 
