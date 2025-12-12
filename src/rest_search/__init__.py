@@ -3,7 +3,7 @@
 from threading import local
 
 from aws_requests_auth.aws_auth import AWSRequestsAuth
-from botocore.session import Session
+from aws_requests_auth.boto_utils import BotoAWSRequestsAuth
 from django.conf import settings
 from opensearchpy import OpenSearch, RequestsHttpConnection
 
@@ -58,14 +58,8 @@ class ConnectionHandler(object):
                 aws_service="es",
             )
         elif "AWS_REGION" in config:
-            session = Session()
-            creds = session.get_credentials().get_frozen_credentials()
-
             kwargs["connection_class"] = RequestsHttpConnection
-            kwargs["http_auth"] = AWSRequestsAuth(
-                aws_access_key=creds.access_key,
-                aws_secret_access_key=creds.secret_key,
-                aws_token=creds.token,
+            kwargs["http_auth"] = BotoAWSRequestsAuth(
                 aws_host=config["HOST"],
                 aws_region=config["AWS_REGION"],
                 aws_service="es",
