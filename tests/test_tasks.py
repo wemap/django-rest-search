@@ -14,7 +14,7 @@ class MockBulk(object):
     def __init__(self):
         self.actions = []
 
-    def __call__(self, es, actions, raise_on_error=True):
+    def __call__(self, client, actions, raise_on_error=True):
         self.actions.extend(actions)
 
 
@@ -41,8 +41,8 @@ class TasksTest(TestCase):
         self.assertEqual(
             mock_exists.mock_calls,
             [
-                mock.call("author"),
-                mock.call("book"),
+                mock.call(index="author"),
+                mock.call(index="book"),
             ],
         )
         self.assertEqual(
@@ -93,8 +93,8 @@ class TasksTest(TestCase):
         self.assertEqual(
             mock_exists.mock_calls,
             [
-                mock.call("author"),
-                mock.call("book"),
+                mock.call(index="author"),
+                mock.call(index="book"),
             ],
         )
         mock_create.assert_not_called()
@@ -185,7 +185,7 @@ class TasksTest(TestCase):
 
         mock_bulk.side_effect = MockBulk()
 
-        def mock_scan(_es, *, index, **kwargs):
+        def mock_scan(*, client, index, **kwargs):
             # nothing in index
             return []
 
@@ -211,7 +211,7 @@ class TasksTest(TestCase):
 
         mock_bulk.side_effect = MockBulk()
 
-        def mock_scan(_es, *, index, **kwargs):
+        def mock_scan(*, client, index, **kwargs):
             return {
                 "author": [],
                 "book": [
@@ -242,7 +242,7 @@ class TasksTest(TestCase):
 
         mock_bulk.side_effect = MockBulk()
 
-        def mock_scan(_es, *, index, **kwargs):
+        def mock_scan(*, client, index, **kwargs):
             return {
                 "author": [
                     {
@@ -295,7 +295,7 @@ class TasksTest(TestCase):
 
         mock_bulk.side_effect = MockBulk()
 
-        def mock_scan(_es, *, index, **kwargs):
+        def mock_scan(*, client, index, **kwargs):
             return {
                 "author": [],
                 "book": [
