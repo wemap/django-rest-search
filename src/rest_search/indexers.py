@@ -50,12 +50,12 @@ class Indexer(object):
         return map(map_result_item, results)
 
     def scan(self, **kwargs):
-        es = get_opensearch(self)
-        return scan(es, index=self.index, **kwargs)
+        client = get_opensearch(self)
+        return scan(client=client, index=self.index, **kwargs)
 
     def search(self, **kwargs):
-        es = get_opensearch(self)
-        return es.search(index=self.index, **kwargs)
+        client = get_opensearch(self)
+        return client.search(index=self.index, **kwargs)
 
 
 def _get_registered():

@@ -25,8 +25,8 @@ def delete_index():
     Deletes the OpenSearch indices.
     """
     for indexer in _get_registered():
-        es = get_opensearch(indexer)
-        es.indices.delete(index=indexer.index, ignore=404)
+        client = get_opensearch(indexer)
+        client.indices.delete(index=indexer.index, ignore=404)
 
 
 @shared_task
@@ -71,14 +71,14 @@ def _create_index(indexer):
     if indexer.mappings is not None:
         body["mappings"] = indexer.mappings
 
-    es = get_opensearch(indexer)
-    if not es.indices.exists(indexer.index):
+    client = get_opensearch(indexer)
+    if not client.indices.exists(index=indexer.index):
         logger.info("Creating index %s" % indexer.index)
-        es.indices.create(index=indexer.index, body=body)
+        client.indices.create(index=indexer.index, body=body)
 
 
 def _delete_items(indexer, pks):
-    es = get_opensearch(indexer)
+    client = get_opensearch(indexer)
 
     def mapper(pk):
         return {
@@ -87,14 +87,14 @@ def _delete_items(indexer, pks):
             "_op_type": "delete",
         }
 
-    bulk(es, map(mapper, pks), raise_on_error=False)
+    bulk(client=client, actions=map(mapper, pks), raise_on_error=False)
 
 
 def _index_items(indexer, pks):
     """
     Primary keys are manipulated in their native type (int, UUID).
     """
-    es = get_opensearch(indexer)
+    client = get_opensearch(indexer)
     seen_pks = set()
 
     def bulk_mapper(block_size=1000):
@@ -112,7 +112,7 @@ def _index_items(indexer, pks):
                     "_source": item,
                 }
 
-    bulk(es, bulk_mapper())
+    bulk(client=client, actions=bulk_mapper())
     return seen_pks
 
 
